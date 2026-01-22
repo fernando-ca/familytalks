@@ -33,188 +33,187 @@ Desenvolver um conjunto de calculadoras interativas baseadas em evidências cien
 
 ## 2. Arquitetura do Sistema
 
-### 2.1 Arquitetura Geral
+### 2.1 Arquitetura Geral (Vercel)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        FRONTEND                              │
-│  ┌────────────┐  ┌────────────┐  ┌─────────────┐           │
-│  │  Landing   │  │ Calculator │  │   Tracker   │           │
-│  │    Page    │→ │   Pages    │→ │  Dashboard  │           │
-│  └────────────┘  └────────────┘  └─────────────┘           │
-│         ↓              ↓                 ↓                   │
-│  ┌──────────────────────────────────────────────┐          │
-│  │         React + TypeScript + Vite            │          │
-│  │      TailwindCSS + Chart.js + Framer Motion  │          │
-│  └──────────────────────────────────────────────┘          │
-└─────────────────────────────────────────────────────────────┘
-                            ↓ REST API / GraphQL
-┌─────────────────────────────────────────────────────────────┐
-│                         BACKEND                              │
-│  ┌────────────┐  ┌────────────┐  ┌─────────────┐           │
-│  │ Calculator │  │    User    │  │  Analytics  │           │
-│  │   Engine   │  │    Auth    │  │   Service   │           │
-│  └────────────┘  └────────────┘  └─────────────┘           │
-│         ↓              ↓                 ↓                   │
-│  ┌──────────────────────────────────────────────┐          │
-│  │         Node.js + Express + TypeScript       │          │
-│  │         (ou Python + FastAPI)                │          │
-│  └──────────────────────────────────────────────┘          │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│                        DATABASE                              │
-│  ┌────────────┐  ┌────────────┐  ┌─────────────┐           │
-│  │ PostgreSQL │  │   Redis    │  │     S3      │           │
-│  │ (Principal)│  │  (Cache)   │  │   (Assets)  │           │
-│  └────────────┘  └────────────┘  └─────────────┘           │
+│                    VERCEL PLATFORM                           │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │              NEXT.JS APPLICATION                      │  │
+│  │                                                        │  │
+│  │   ┌────────────┐  ┌────────────┐  ┌─────────────┐   │  │
+│  │   │  Landing   │  │ Calculator │  │   Tracker   │   │  │
+│  │   │    Page    │→ │   Pages    │→ │  Dashboard  │   │  │
+│  │   └────────────┘  └────────────┘  └─────────────┘   │  │
+│  │                                                        │  │
+│  │   ┌──────────────────────────────────────────────┐   │  │
+│  │   │          API Routes (Serverless)             │   │  │
+│  │   │   /api/calculators  /api/auth  /api/tracker  │   │  │
+│  │   └──────────────────────────────────────────────┘   │  │
+│  │                                                        │  │
+│  │         Next.js 14 + TypeScript + TailwindCSS         │  │
+│  │              Chart.js + Framer Motion                  │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                            ↓                                 │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │                  VERCEL STORAGE                       │  │
+│  │   ┌────────────┐  ┌────────────┐  ┌─────────────┐   │  │
+│  │   │  Vercel    │  │  Vercel    │  │   Vercel    │   │  │
+│  │   │  Postgres  │  │    KV      │  │    Blob     │   │  │
+│  │   │  (Database)│  │  (Cache)   │  │  (Assets)   │   │  │
+│  │   └────────────┘  └────────────┘  └─────────────┘   │  │
+│  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2 Stack Tecnológica Recomendada
+### 2.2 Stack Tecnológica (Vercel)
 
-#### Frontend
+#### Frontend + Backend (Full-Stack Next.js)
 | Tecnologia | Versão | Propósito |
 |-----------|--------|-----------|
-| **React** | 18+ | Framework UI |
+| **Next.js** | 14+ | Framework Full-Stack (App Router) |
+| **React** | 18+ | UI Library |
 | **TypeScript** | 5+ | Type safety |
-| **Vite** | 5+ | Build tool |
 | **TailwindCSS** | 3+ | Styling |
 | **Chart.js** | 4+ | Visualizações |
+| **Recharts** | 2+ | Alternativa para gráficos |
 | **Framer Motion** | 11+ | Animações |
 | **React Hook Form** | 7+ | Formulários |
 | **Zod** | 3+ | Validação |
-| **React Query** | 5+ | State management API |
-
-#### Backend
-| Tecnologia | Versão | Propósito |
-|-----------|--------|-----------|
-| **Node.js** | 20 LTS | Runtime |
-| **Express** | 4+ | Web framework |
-| **TypeScript** | 5+ | Type safety |
+| **NextAuth.js** | 5+ | Autenticação |
 | **Prisma** | 5+ | ORM |
-| **JWT** | - | Autenticação |
-| **Joi** | 17+ | Validação |
-| **Winston** | 3+ | Logging |
 
-**Alternativa Python**:
-- FastAPI + SQLAlchemy + Pydantic (melhor para cálculos científicos complexos)
-
-#### Database
+#### Database (Vercel Storage)
 | Tecnologia | Propósito |
 |-----------|-----------|
-| **PostgreSQL 15+** | Dados principais |
-| **Redis 7+** | Cache, sessões |
-| **AWS S3** | Armazenamento de assets |
+| **Vercel Postgres** | Dados principais (PostgreSQL serverless) |
+| **Vercel KV** | Cache, sessões (Redis-compatible) |
+| **Vercel Blob** | Armazenamento de assets |
 
-#### DevOps
+**Alternativa de Database:**
+- **Supabase** - PostgreSQL com auth integrado
+- **PlanetScale** - MySQL serverless
+
+#### DevOps (Vercel Platform)
 | Tecnologia | Propósito |
 |-----------|-----------|
-| **Docker** | Containerização |
-| **GitHub Actions** | CI/CD |
-| **Vercel/Railway** | Deploy frontend |
-| **Render/Railway** | Deploy backend |
+| **Vercel** | Deploy automático, Preview deployments |
+| **GitHub Actions** | CI (testes, linting) |
+| **Vercel Analytics** | Web analytics integrado |
+| **Vercel Speed Insights** | Performance monitoring |
 | **Sentry** | Error tracking |
-| **PostHog** | Analytics |
 
-### 2.3 Estrutura de Pastas
+### 2.3 Estrutura de Pastas (Next.js + Vercel)
 
 ```
 familytalks/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── calculators/
-│   │   │   │   ├── ScreenTime/
-│   │   │   │   ├── FamilyMeals/
-│   │   │   │   ├── Reading/
-│   │   │   │   ├── SocialROI/
-│   │   │   │   └── ConnectionTracker/
-│   │   │   ├── shared/
-│   │   │   │   ├── Input.tsx
-│   │   │   │   ├── Slider.tsx
-│   │   │   │   ├── Button.tsx
-│   │   │   │   ├── Chart.tsx
-│   │   │   │   └── ResultCard.tsx
-│   │   │   └── layout/
-│   │   │       ├── Header.tsx
-│   │   │       ├── Footer.tsx
-│   │   │       └── Navigation.tsx
-│   │   ├── pages/
-│   │   │   ├── Home.tsx
-│   │   │   ├── ScreenTimeCalculator.tsx
-│   │   │   ├── FamilyMealsCalculator.tsx
-│   │   │   └── Dashboard.tsx
-│   │   ├── hooks/
-│   │   │   ├── useCalculator.ts
-│   │   │   ├── useTracker.ts
-│   │   │   └── useAuth.ts
-│   │   ├── services/
-│   │   │   ├── api.ts
-│   │   │   ├── calculations.ts
-│   │   │   └── analytics.ts
-│   │   ├── types/
-│   │   │   ├── calculator.types.ts
-│   │   │   ├── user.types.ts
-│   │   │   └── api.types.ts
-│   │   ├── utils/
-│   │   │   ├── formatters.ts
-│   │   │   ├── validators.ts
-│   │   │   └── constants.ts
-│   │   └── App.tsx
-│   ├── public/
-│   ├── package.json
-│   └── tsconfig.json
+├── src/
+│   ├── app/                              # Next.js App Router
+│   │   ├── layout.tsx                    # Layout principal
+│   │   ├── page.tsx                      # Landing page (/)
+│   │   ├── globals.css
+│   │   │
+│   │   ├── calculadoras/
+│   │   │   ├── tempo-familiar/           # /calculadoras/tempo-familiar
+│   │   │   │   └── page.tsx
+│   │   │   ├── tempo-tela/               # /calculadoras/tempo-tela
+│   │   │   │   └── page.tsx
+│   │   │   ├── roi-social/               # /calculadoras/roi-social
+│   │   │   │   └── page.tsx
+│   │   │   ├── refeicoes/                # /calculadoras/refeicoes
+│   │   │   │   └── page.tsx
+│   │   │   └── momentos/                 # /calculadoras/momentos
+│   │   │       └── page.tsx
+│   │   │
+│   │   ├── quiz/                         # /quiz
+│   │   │   └── page.tsx
+│   │   │
+│   │   ├── dashboard/                    # /dashboard
+│   │   │   └── page.tsx
+│   │   │
+│   │   └── api/                          # API Routes (Serverless)
+│   │       ├── calculators/
+│   │       │   ├── tempo-familiar/route.ts
+│   │       │   ├── tempo-tela/route.ts
+│   │       │   ├── roi-social/route.ts
+│   │       │   ├── refeicoes/route.ts
+│   │       │   └── momentos/route.ts
+│   │       ├── quiz/route.ts
+│   │       ├── tracker/route.ts
+│   │       └── auth/[...nextauth]/route.ts
+│   │
+│   ├── components/
+│   │   ├── calculators/                  # Componentes das 6 calculadoras
+│   │   │   ├── TempoFamiliar/
+│   │   │   │   ├── Form.tsx
+│   │   │   │   └── Results.tsx
+│   │   │   ├── TempoTela/
+│   │   │   ├── ROISocial/
+│   │   │   ├── Refeicoes/
+│   │   │   ├── Quiz/
+│   │   │   └── Momentos/
+│   │   ├── shared/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── Slider.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── Chart.tsx
+│   │   │   └── ResultCard.tsx
+│   │   └── layout/
+│   │       ├── Header.tsx
+│   │       ├── Footer.tsx
+│   │       └── Navigation.tsx
+│   │
+│   ├── lib/
+│   │   ├── calculations/                 # Lógica de cálculo das calculadoras
+│   │   │   ├── tempoFamiliar.ts
+│   │   │   ├── tempoTela.ts
+│   │   │   ├── roiSocial.ts
+│   │   │   ├── refeicoes.ts
+│   │   │   ├── quiz.ts
+│   │   │   └── momentos.ts
+│   │   ├── db.ts                         # Prisma client
+│   │   ├── auth.ts                       # NextAuth config
+│   │   └── utils.ts
+│   │
+│   ├── hooks/
+│   │   ├── useCalculator.ts
+│   │   ├── useTracker.ts
+│   │   └── useAuth.ts
+│   │
+│   └── types/
+│       ├── calculator.types.ts
+│       ├── user.types.ts
+│       └── api.types.ts
 │
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   │   ├── calculator.controller.ts
-│   │   │   ├── user.controller.ts
-│   │   │   └── tracker.controller.ts
-│   │   ├── services/
-│   │   │   ├── screenTime.service.ts
-│   │   │   ├── familyMeals.service.ts
-│   │   │   ├── reading.service.ts
-│   │   │   └── analytics.service.ts
-│   │   ├── models/
-│   │   │   ├── User.ts
-│   │   │   ├── CalculatorResult.ts
-│   │   │   └── TrackerEntry.ts
-│   │   ├── routes/
-│   │   │   ├── calculator.routes.ts
-│   │   │   ├── user.routes.ts
-│   │   │   └── tracker.routes.ts
-│   │   ├── middleware/
-│   │   │   ├── auth.middleware.ts
-│   │   │   ├── validation.middleware.ts
-│   │   │   └── rateLimit.middleware.ts
-│   │   ├── utils/
-│   │   │   ├── calculations/
-│   │   │   │   ├── screenTimeCalculations.ts
-│   │   │   │   ├── mealCalculations.ts
-│   │   │   │   └── readingCalculations.ts
-│   │   │   └── helpers.ts
-│   │   ├── config/
-│   │   │   ├── database.ts
-│   │   │   └── constants.ts
-│   │   └── server.ts
-│   ├── prisma/
-│   │   └── schema.prisma
-│   ├── tests/
-│   ├── package.json
-│   └── tsconfig.json
+├── prisma/
+│   ├── schema.prisma
+│   └── seed.ts
+│
+├── public/
+│   ├── images/
+│   └── icons/
 │
 ├── docs/
 │   ├── api/
 │   ├── research/
 │   └── user-guides/
 │
-├── docker-compose.yml
+├── tests/
+│   ├── unit/
+│   │   └── calculations/
+│   └── e2e/
+│
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml
-│       └── deploy.yml
+│       └── ci.yml
+│
+├── vercel.json                          # Configuração Vercel
+├── next.config.js
+├── tailwind.config.js
+├── package.json
+├── tsconfig.json
 └── README.md
 ```
 
@@ -222,9 +221,146 @@ familytalks/
 
 ## 3. Especificações das Calculadoras
 
-### 3.1 Calculadora de Tempo de Tela
+### 3.1 Calculadora de Tempo Familiar
+
+**Propósito**: Mensurar o tempo de qualidade dedicado aos filhos e comparar com médias nacionais, gerando conscientização e motivação.
 
 #### 3.1.1 Inputs
+
+```typescript
+interface FamilyTimeInput {
+  // Informações básicas
+  numberOfChildren: number;           // 1-8
+  childrenAges: number[];             // Array de idades (0-17)
+
+  // Tempo de qualidade por dia (horas)
+  weekdayHours: number;               // 0-8 horas/dia em dias úteis
+  weekendHours: number;               // 0-16 horas/dia em fins de semana
+
+  // Tipo de atividades
+  activities: {
+    meals: number;                    // Refeições juntos (horas/semana)
+    play: number;                     // Brincadeiras/jogos (horas/semana)
+    reading: number;                  // Leitura compartilhada (horas/semana)
+    homework: number;                 // Dever de casa (horas/semana)
+    conversation: number;             // Conversas significativas (horas/semana)
+    outdoor: number;                  // Atividades ao ar livre (horas/semana)
+  };
+
+  // Contexto familiar
+  workSchedule: 'full_time' | 'part_time' | 'remote' | 'stay_at_home';
+  familyStructure: 'two_parents' | 'single_parent' | 'shared_custody';
+}
+```
+
+#### 3.1.2 Cálculos
+
+```typescript
+// Média diária ponderada
+const dailyAverage = (weekdayHours * 5 + weekendHours * 2) / 7;
+
+// Projeções anuais
+const yearlyHours = dailyAverage * 365;
+const totalWeeklyActivities = Object.values(activities).reduce((a, b) => a + b, 0);
+
+// Benchmarks por idade (médias nacionais EUA - Pew Research)
+const nationalAverageByAge = {
+  '0-5': 2.5,   // horas/dia
+  '6-12': 1.8,  // horas/dia
+  '13-17': 1.2  // horas/dia
+};
+
+// Comparação com média nacional
+function getAgeGroup(age: number): string {
+  if (age <= 5) return '0-5';
+  if (age <= 12) return '6-12';
+  return '13-17';
+}
+
+const avgChildAge = childrenAges.reduce((a, b) => a + b, 0) / childrenAges.length;
+const nationalAvg = nationalAverageByAge[getAgeGroup(avgChildAge)];
+const comparisonToNational = ((dailyAverage - nationalAvg) / nationalAvg) * 100;
+
+// "Banco de Memórias" - projeção de horas acumuladas até os 18 anos
+function calculateMemoryBank(currentAges: number[], hoursPerYear: number) {
+  return currentAges.map(age => {
+    const yearsRemaining = 18 - age;
+    const totalHours = yearsRemaining * hoursPerYear;
+    const memorableEvents = Math.floor(totalHours / 2); // ~2h por evento memorável
+    return { age, yearsRemaining, totalHours, memorableEvents };
+  });
+}
+
+// Categoria de engajamento
+function getEngagementLevel(dailyHours: number, ageGroup: string) {
+  const thresholds = {
+    '0-5': { low: 1.5, medium: 2.5, high: 4 },
+    '6-12': { low: 1, medium: 1.8, high: 3 },
+    '13-17': { low: 0.5, medium: 1.2, high: 2 }
+  };
+
+  const t = thresholds[ageGroup];
+  if (dailyHours < t.low) return 'needs_attention';
+  if (dailyHours < t.medium) return 'building';
+  if (dailyHours < t.high) return 'engaged';
+  return 'highly_connected';
+}
+```
+
+#### 3.1.3 Output
+
+```typescript
+interface FamilyTimeResult {
+  summary: {
+    dailyAverage: number;
+    weeklyTotal: number;
+    yearlyProjection: number;
+    comparisonToNational: number;      // % acima/abaixo da média
+    engagementLevel: 'needs_attention' | 'building' | 'engaged' | 'highly_connected';
+  };
+
+  memoryBank: {
+    perChild: {
+      childAge: number;
+      yearsRemaining: number;
+      projectedHours: number;
+      memorableEvents: number;         // Eventos memoráveis estimados
+    }[];
+    totalFamilyHours: number;
+    metaphor: string;                  // Ex: "Equivalente a 125 dias inteiros"
+  };
+
+  activityBreakdown: {
+    activity: string;
+    hoursPerWeek: number;
+    percentageOfTotal: number;
+    recommendation: string;
+  }[];
+
+  nationalComparison: {
+    yourFamily: number;
+    nationalAverage: number;
+    topQuartile: number;               // Top 25% de famílias
+    percentile: number;                // Em qual percentil você está
+  };
+
+  suggestions: {
+    quickWins: string[];               // Mudanças fáceis de implementar
+    highImpact: string[];              // Mudanças de maior impacto
+    byActivity: { activity: string; suggestion: string }[];
+  };
+
+  sources: Reference[];
+}
+```
+
+---
+
+### 3.2 Calculadora de Impacto do Tempo de Tela
+
+**Propósito**: Baseada em dados do "Anxious Generation" (Jonathan Haidt), mostra o impacto do uso de telas na saúde mental.
+
+#### 3.2.1 Inputs
 
 ```typescript
 interface ScreenTimeInput {
@@ -239,7 +375,7 @@ interface ScreenTimeInput {
 }
 ```
 
-#### 3.1.2 Cálculos
+#### 3.2.2 Cálculos
 
 ```typescript
 // Média diária ponderada
@@ -271,7 +407,7 @@ const totalMultiplier = Object.values(multipliers).reduce((a, b) => a * b, 1);
 riskScore = baseFactor * totalMultiplier;
 ```
 
-#### 3.1.3 Output
+#### 3.2.3 Output
 
 ```typescript
 interface ScreenTimeResult {
@@ -303,24 +439,236 @@ interface ScreenTimeResult {
 }
 ```
 
-### 3.2 Calculadora de Refeições em Família
+### 3.3 Calculadora de ROI Social da Parentalidade
 
-#### 3.2.1 Inputs
+**Propósito**: Traduz investimento de tempo parental em valor econômico e social para advocacy e políticas públicas.
+
+#### 3.3.1 Inputs
 
 ```typescript
-interface FamilyMealsInput {
-  numberOfChildren: number; // 1-8
-  childrenAges: number[]; // array de idades
-  breakfastPerWeek: number; // 0-7
-  lunchPerWeek: number; // 0-7
-  dinnerPerWeek: number; // 0-7
-  averageDuration: '<10min' | '10-20min' | '20-30min' | '30+min';
-  screensPresent: 'always' | 'sometimes' | 'never';
-  whoParticipates: ('mother' | 'father' | 'grandparents' | 'all')[];
+interface SocialROIInput {
+  // Tempo investido
+  weeklyQualityHours: number;           // 0-40 horas/semana
+
+  // Atividades (horas/semana cada)
+  activities: {
+    reading: number;
+    meals: number;
+    play: number;
+    homework: number;
+    sports: number;
+    conversations: number;
+  };
+
+  // Contexto familiar
+  numberOfChildren: number;
+  childrenAges: number[];
+  familyIncome: 'low' | 'middle' | 'high';
+  region: string;                        // Estado/região
+  familyStructure: 'biparental' | 'monoparental' | 'shared_custody';
 }
 ```
 
-#### 3.2.2 Cálculos
+#### 3.3.2 Cálculos
+
+```typescript
+// Valor base por hora (baseado em estudos de custo-benefício)
+const VALUE_PER_HOUR_USD = 20;  // Baseado em $70k evitados em 7 anos / 500h/ano
+const USD_TO_BRL = 5.0;
+const VALUE_PER_HOUR_BRL = VALUE_PER_HOUR_USD * USD_TO_BRL;
+
+// Pesos por tipo de atividade (baseado em evidências)
+const activityWeights = {
+  reading: 1.5,        // Alto impacto cognitivo
+  meals: 1.2,          // Forte evidência protetiva
+  play: 1.3,           // Desenvolvimento socioemocional
+  homework: 0.8,       // Menor impacto relacional
+  sports: 1.1,         // Saúde física + social
+  conversations: 1.4   // Saúde mental
+};
+
+// Cálculo de ROI anual
+function calculateAnnualROI(activities: Activities, children: number) {
+  let totalValue = 0;
+
+  Object.entries(activities).forEach(([activity, hours]) => {
+    const yearlyHours = hours * 52;
+    const weight = activityWeights[activity] || 1.0;
+    totalValue += yearlyHours * VALUE_PER_HOUR_BRL * weight;
+  });
+
+  return totalValue * children;
+}
+
+// Economia em custos públicos
+const publicCostSavings = {
+  mentalHealthPrevention: 4120,    // R$/pessoa/ano
+  substanceAbusePrevention: 7500,  // R$/pessoa/ano
+  juvenileJusticeSavings: 25000,   // R$/pessoa (evitado)
+  educationalDropoutSavings: 150000 // R$/pessoa (lifetime productivity)
+};
+```
+
+#### 3.3.3 Output
+
+```typescript
+interface SocialROIResult {
+  familyInvestment: {
+    weeklyHours: number;
+    yearlyHours: number;
+    activityBreakdown: { activity: string; hours: number; weight: number }[];
+  };
+
+  economicValue: {
+    annualROI: number;                   // R$/ano
+    perHourValue: number;                // R$/hora
+    lifetimeValue: number;               // Valor até os 18 anos
+  };
+
+  publicSavings: {
+    mentalHealth: number;
+    substanceAbuse: number;
+    juvenileJustice: number;
+    educationalOutcomes: number;
+    totalSavings: number;
+  };
+
+  communityImpact: {
+    if1000Families: {
+      publicHealthSavings: number;
+      justiceSavings: number;
+      educationGains: number;
+      totalImpact: number;
+    };
+  };
+
+  comparisonToAlternatives: {
+    intervention: string;
+    costPerChild: number;
+    effectiveness: string;
+    roi: string;
+  }[];
+
+  advocacyTools: {
+    summaryForEmployer: string;
+    letterToLegislator: string;
+    socialMediaPost: string;
+    infographicData: object;
+  };
+
+  sources: Reference[];
+}
+```
+
+---
+
+### 3.4 Quiz: Estilo de Parentalidade
+
+**Propósito**: Diagnóstico não-julgador que identifica padrão atual e sugere ajustes baseados em evidências.
+
+#### 3.4.1 Estrutura de Perguntas
+
+```typescript
+interface QuizQuestion {
+  id: string;
+  dimension: 'warmth' | 'structure' | 'autonomy' | 'involvement';
+  question: string;
+  options: {
+    text: string;
+    points: number;  // 0-3
+    style: string;   // authoritative, permissive, authoritarian, uninvolved
+  }[];
+}
+
+// 20 perguntas divididas em 4 dimensões (5 por dimensão)
+// Dimensões baseadas em Baumrind's Parenting Styles + pesquisas modernas
+```
+
+#### 3.4.2 Cálculos
+
+```typescript
+interface QuizScores {
+  warmth: number;        // 0-15
+  structure: number;     // 0-15
+  autonomy: number;      // 0-15
+  involvement: number;   // 0-15
+  total: number;         // 0-60
+}
+
+// Estilos de parentalidade
+function getParentingStyle(scores: QuizScores): string {
+  const { warmth, structure } = scores;
+
+  if (warmth >= 10 && structure >= 10) return 'authoritative';   // Alto afeto + Alta estrutura
+  if (warmth >= 10 && structure < 10) return 'permissive';       // Alto afeto + Baixa estrutura
+  if (warmth < 10 && structure >= 10) return 'authoritarian';    // Baixo afeto + Alta estrutura
+  return 'uninvolved';                                           // Baixo afeto + Baixa estrutura
+}
+
+// Recomendações baseadas em estilo
+const styleRecommendations = {
+  authoritative: 'Excelente! Continue equilibrando afeto e limites.',
+  permissive: 'Tente adicionar mais estrutura e consistência nas regras.',
+  authoritarian: 'Considere aumentar demonstrações de afeto e flexibilidade.',
+  uninvolved: 'Busque aumentar tanto presença emocional quanto estrutura.'
+};
+```
+
+#### 3.4.3 Output
+
+```typescript
+interface QuizResult {
+  profile: {
+    primaryStyle: 'authoritative' | 'permissive' | 'authoritarian' | 'uninvolved';
+    totalScore: number;
+    percentile: number;
+  };
+
+  dimensionScores: {
+    warmth: { score: number; max: number; description: string };
+    structure: { score: number; max: number; description: string };
+    autonomy: { score: number; max: number; description: string };
+    involvement: { score: number; max: number; description: string };
+  };
+
+  styleAnalysis: {
+    strengths: string[];
+    growthAreas: string[];
+    evidenceBased: string;        // O que pesquisas dizem sobre este estilo
+  };
+
+  actionPlan: {
+    primaryFocus: string;
+    weeklyGoals: string[];
+    resources: string[];
+  };
+
+  retakeDate: Date;               // Sugestão para refazer em 30 dias
+  sources: Reference[];
+}
+```
+
+---
+
+### 3.5 Calculadora de Refeições em Família
+
+**Propósito**: Demonstra os fatores de proteção gerados por refeições compartilhadas com dados de impacto.
+
+#### 3.5.1 Inputs
+
+```typescript
+interface FamilyMealsInput {
+  mealsPerWeek: number;                  // 0-21 (café + almoço + jantar)
+  // Ou detalhado:
+  breakfastPerWeek?: number;             // 0-7
+  lunchPerWeek?: number;                 // 0-7
+  dinnerPerWeek?: number;                // 0-7
+
+  childrenAges?: number[];               // Opcional para contexto
+}
+```
+
+#### 3.5.2 Cálculos
 
 ```typescript
 // Total de refeições
@@ -360,7 +708,7 @@ function getProtectionFactors(meals: number, quality: number) {
 }
 ```
 
-#### 3.2.3 Output
+#### 3.5.3 Output
 
 ```typescript
 interface FamilyMealsResult {
@@ -399,242 +747,11 @@ interface FamilyMealsResult {
 }
 ```
 
-### 3.3 Calculadora de Leitura Compartilhada
+### 3.6 Contador de "Momentos de Conexão"
 
-#### 3.3.1 Inputs
+**Propósito**: Tracker semanal gamificado de interações significativas, transformando intenções em hábitos.
 
-```typescript
-interface ReadingInput {
-  childName: string;
-  childAge: number; // 0-12
-  currentFrequency: 'never' | '1-2_per_week' | '3-4_per_week' | 'daily';
-  minutesPerSession: number; // 5-60
-  whoReads: ('mother' | 'father' | 'grandparents' | 'siblings')[];
-  bookType: 'picture_books' | 'stories' | 'educational' | 'varied';
-  childParticipation: 'listens_only' | 'points_pictures' | 'asks_questions' | 'reads_along';
-}
-```
-
-#### 3.3.2 Cálculos
-
-```typescript
-// Frequência em número
-const frequencyMap = {
-  'never': 0,
-  '1-2_per_week': 1.5,
-  '3-4_per_week': 3.5,
-  'daily': 7
-};
-
-minutesPerWeek = frequencyMap[currentFrequency] * minutesPerSession;
-
-// Palavras expostas (150 palavras/minuto é média estimada)
-wordsPerWeek = minutesPerWeek * 150;
-wordsPerYear = wordsPerWeek * 52;
-
-// Palavras acumuladas desde nascimento
-yearsReading = Math.max(childAge - 0, 0); // assumindo leitura desde bebê
-accumulatedWords = wordsPerYear * yearsReading;
-
-// Benchmark Ohio State (5x/dia, 15 min)
-benchmarkPerYear = (5 * 15 * 150) * 52; // ~585,000 palavras/ano
-benchmarkUntilAge5 = benchmarkPerYear * 5; // ~2,925,000 palavras
-
-// Gap de vocabulário
-if (childAge < 5) {
-  projectedUntil5 = wordsPerYear * (5 - childAge) + accumulatedWords;
-} else {
-  projectedUntil5 = accumulatedWords;
-}
-vocabularyGap = benchmarkUntilAge5 - projectedUntil5;
-
-// Impacto cognitivo (effect sizes de Weisleder et al., 2017)
-function getCognitiveImpact(minutesPerWeek: number) {
-  if (minutesPerWeek >= 105) { // 15min/dia
-    return {
-      receptiveVocabulary: 0.33, // desvios padrão
-      workingMemory: 0.46,
-      iq: 0.33
-    };
-  } else {
-    const ratio = minutesPerWeek / 105;
-    return {
-      receptiveVocabulary: 0.33 * ratio,
-      workingMemory: 0.46 * ratio,
-      iq: 0.33 * ratio
-    };
-  }
-}
-```
-
-#### 3.3.3 Output
-
-```typescript
-interface ReadingResult {
-  currentProfile: {
-    frequency: string;
-    wordsPerWeek: number;
-    wordsPerYear: number;
-    accumulatedWords: number;
-    benchmark: number;
-  };
-  vocabularyGap: {
-    comparison: {
-      neverRead: number;
-      yourChild: number;
-      dailyReading: number;
-      benchmark: number;
-    };
-    currentGap: number;
-    percentile: string;
-  };
-  cognitiveImpact: {
-    currentImpact: {
-      vocabulary: string;
-      workingMemory: string;
-      iq: string;
-      schoolReadiness: string;
-    };
-    potentialImpact: {
-      vocabulary: string;
-      workingMemory: string;
-      iq: string;
-      percentileShift: string;
-    };
-  };
-  fifteenMinutePlan: {
-    currentMinutesPerWeek: number;
-    goalMinutesPerWeek: number; // 105 (15min/dia)
-    dailySchedule: DailyReadingSchedule[];
-  };
-  progressTracker: {
-    booksReadThisMonth: number;
-    totalPages: number;
-    wordsExposed: number;
-    currentStreak: number;
-    nextMilestone: Milestone;
-  };
-  sources: Reference[];
-}
-```
-
-### 3.4 Quiz de Perfil de Conexão Familiar
-
-#### 3.4.1 Estrutura de Perguntas
-
-```typescript
-interface QuizQuestion {
-  id: string;
-  dimension: 'presence' | 'quality' | 'consistency' | 'digital';
-  question: string;
-  options: {
-    text: string;
-    points: number; // 0-3
-  }[];
-}
-
-const quizQuestions: QuizQuestion[] = [
-  // Presença (4 perguntas, max 12 pontos)
-  {
-    id: 'p1',
-    dimension: 'presence',
-    question: 'Quantas refeições por semana sua família faz junta?',
-    options: [
-      { text: '0-2 refeições', points: 0 },
-      { text: '3-4 refeições', points: 1 },
-      { text: '5-6 refeições', points: 2 },
-      { text: '7+ refeições', points: 3 }
-    ]
-  },
-  // ... mais 14 perguntas
-];
-```
-
-#### 3.4.2 Cálculos
-
-```typescript
-interface QuizScores {
-  presence: number; // 0-12
-  quality: number; // 0-12
-  consistency: number; // 0-12
-  digital: number; // 0-9
-  total: number; // 0-45
-}
-
-function calculateProfile(answers: number[]): QuizScores {
-  const scores = {
-    presence: 0,
-    quality: 0,
-    consistency: 0,
-    digital: 0,
-    total: 0
-  };
-
-  quizQuestions.forEach((q, index) => {
-    scores[q.dimension] += answers[index];
-    scores.total += answers[index];
-  });
-
-  return scores;
-}
-
-function getProfileType(total: number): string {
-  if (total <= 15) return 'alert';
-  if (total <= 25) return 'building';
-  if (total <= 35) return 'engaged';
-  return 'connected';
-}
-
-function getTopOpportunity(scores: QuizScores): string {
-  const percentages = {
-    presence: (scores.presence / 12) * 100,
-    quality: (scores.quality / 12) * 100,
-    consistency: (scores.consistency / 12) * 100,
-    digital: (scores.digital / 9) * 100
-  };
-
-  const lowest = Object.entries(percentages)
-    .sort((a, b) => a[1] - b[1])[0][0];
-
-  return lowest;
-}
-```
-
-#### 3.4.3 Output
-
-```typescript
-interface QuizResult {
-  profile: {
-    name: string;
-    totalScore: number;
-    maxScore: number;
-    type: 'alert' | 'building' | 'engaged' | 'connected';
-  };
-  dimensionScores: {
-    presence: { score: number; max: number; percentage: number };
-    quality: { score: number; max: number; percentage: number };
-    consistency: { score: number; max: number; percentage: number };
-    digital: { score: number; max: number; percentage: number };
-  };
-  strengths: string[];
-  topOpportunity: {
-    dimension: string;
-    currentScore: number;
-    impact: string;
-    suggestedAction: string;
-  };
-  thirtyDayPlan: {
-    goal: string;
-    weeklyActions: WeeklyAction[];
-    expectedImprovement: number;
-  };
-  retakeDate: Date;
-}
-```
-
-### 3.5 Tracker Semanal de Momentos de Conexão
-
-#### 3.5.1 Input Diário
+#### 3.6.1 Input Diário
 
 ```typescript
 interface DailyCheckIn {
@@ -646,7 +763,7 @@ interface DailyCheckIn {
 }
 ```
 
-#### 3.5.2 Cálculos
+#### 3.6.2 Cálculos
 
 ```typescript
 // Meta semanal (baseado em pesquisa: 6h/semana para adolescentes)
@@ -703,7 +820,7 @@ function analyzePatterns(history: DailyCheckIn[]): Pattern {
 }
 ```
 
-#### 3.5.3 Output
+#### 3.6.3 Output
 
 ```typescript
 interface TrackerResult {
@@ -811,7 +928,7 @@ model CalculatorResult {
   userId        String
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  calculatorType String  // 'screen_time', 'family_meals', 'reading', 'social_roi'
+  calculatorType String  // 'family_time', 'screen_time', 'social_roi', 'family_meals', 'moments'
   inputData     Json
   outputData    Json
 
@@ -901,10 +1018,11 @@ GET    /api/auth/me
 ### 5.2 Calculadoras
 
 ```
-POST   /api/calculators/screen-time
-POST   /api/calculators/family-meals
-POST   /api/calculators/reading
-POST   /api/calculators/social-roi
+POST   /api/calculators/tempo-familiar     # Calculadora de Tempo Familiar
+POST   /api/calculators/tempo-tela         # Calculadora de Impacto do Tempo de Tela
+POST   /api/calculators/roi-social         # Calculadora de ROI Social da Parentalidade
+POST   /api/calculators/refeicoes          # Calculadora de Refeições em Família
+POST   /api/calculators/momentos           # Contador de Momentos de Conexão
 GET    /api/calculators/results/:userId
 GET    /api/calculators/results/:userId/:type
 ```
@@ -1190,51 +1308,61 @@ jobs:
           # deploy commands with extra safety checks
 ```
 
-### 8.3 Infraestrutura Recomendada
+### 8.3 Infraestrutura (Vercel)
 
-**Opção 1: Serverless (Baixo custo inicial)**
-- **Frontend**: Vercel/Netlify
-- **Backend**: Railway/Render
-- **Database**: Supabase/Neon (Postgres serverless)
-- **Cache**: Upstash Redis
-- **Storage**: Cloudflare R2
+**Stack Unificada no Vercel:**
+- **Frontend + Backend**: Vercel (Next.js full-stack)
+- **Database**: Vercel Postgres (PostgreSQL serverless)
+- **Cache**: Vercel KV (Redis-compatible)
+- **Storage**: Vercel Blob
+- **Analytics**: Vercel Analytics + Speed Insights
 
-**Custo estimado**: $20-50/mês para MVP
+**Custo estimado**:
+- **Hobby (gratuito)**: Suficiente para desenvolvimento e testes
+- **Pro ($20/mês)**: Recomendado para produção com mais recursos
+- **Storage**: Postgres ($0.30/GB), KV ($0.50/100k requests)
 
-**Opção 2: Cloud Tradicional (Escalável)**
-- **Frontend**: AWS S3 + CloudFront
-- **Backend**: AWS ECS Fargate
-- **Database**: AWS RDS PostgreSQL
-- **Cache**: AWS ElastiCache Redis
-- **Storage**: AWS S3
+**Configuração Vercel (vercel.json)**:
+```json
+{
+  "framework": "nextjs",
+  "regions": ["gru1"],
+  "env": {
+    "DATABASE_URL": "@database-url",
+    "NEXTAUTH_SECRET": "@nextauth-secret"
+  }
+}
+```
 
-**Custo estimado**: $100-300/mês
+**Alternativa de Database:**
+- **Supabase**: PostgreSQL + Auth integrado (mais features, custo similar)
+- **PlanetScale**: MySQL serverless (excelente para escala)
 
 ---
 
 ## 9. Roadmap Técnico
 
 ### Fase 1: MVP (Meses 1-3)
-- [ ] Setup inicial do projeto
-- [ ] Autenticação básica
-- [ ] Calculadora de Tempo de Tela
-- [ ] Quiz de Perfil
-- [ ] Tracker Semanal
+- [ ] Setup inicial do projeto (Next.js + Vercel)
+- [ ] Autenticação (NextAuth.js)
+- [ ] **Calculadora de Tempo Familiar**
+- [ ] **Calculadora de Impacto do Tempo de Tela**
 - [ ] Landing page
+- [ ] Deploy no Vercel
 
 ### Fase 2: Expansão (Meses 4-6)
-- [ ] Calculadora de Refeições
-- [ ] Calculadora de Leitura
+- [ ] **Calculadora de Refeições em Família**
+- [ ] **Quiz: Estilo de Parentalidade**
+- [ ] **Contador de Momentos de Conexão**
 - [ ] Dashboard consolidado
-- [ ] Sistema de conquistas completo
-- [ ] Relatórios mensais por email
+- [ ] Sistema de conquistas
 
 ### Fase 3: Impacto Sistêmico (Meses 7-12)
-- [ ] Calculadora de ROI Social
-- [ ] Ferramentas de advocacy
+- [ ] **Calculadora de ROI Social da Parentalidade**
+- [ ] Ferramentas de advocacy (PDFs, templates)
 - [ ] API pública para pesquisadores
 - [ ] Integração com parceiros (escolas, clínicas)
-- [ ] App mobile (React Native)
+- [ ] Relatórios mensais por email
 
 ---
 

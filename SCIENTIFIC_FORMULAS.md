@@ -1,25 +1,112 @@
 # Fórmulas e Dados Científicos - Calculadoras FamilyTalks.org
 
-**Versão**: 1.0
-**Data**: 21 de janeiro de 2026
+**Versão**: 1.1
+**Data**: 22 de janeiro de 2026
 **Propósito**: Referência rápida para implementação e validação científica
 
 ---
 
 ## Índice
 
-1. [Calculadora de Tempo de Tela](#1-calculadora-de-tempo-de-tela)
-2. [Calculadora de Refeições em Família](#2-calculadora-de-refeições-em-família)
-3. [Calculadora de Leitura Compartilhada](#3-calculadora-de-leitura-compartilhada)
-4. [Calculadora de ROI Social](#4-calculadora-de-roi-social)
-5. [Quiz de Perfil de Conexão](#5-quiz-de-perfil-de-conexão)
-6. [Referências Científicas](#6-referências-científicas)
+### Calculadoras
+1. [Calculadora de Tempo Familiar](#1-calculadora-de-tempo-familiar)
+2. [Calculadora de Impacto do Tempo de Tela](#2-calculadora-de-impacto-do-tempo-de-tela)
+3. [Calculadora de ROI Social da Parentalidade](#3-calculadora-de-roi-social-da-parentalidade)
+4. [Quiz: Estilo de Parentalidade](#4-quiz-estilo-de-parentalidade)
+5. [Calculadora de Refeições em Família](#5-calculadora-de-refeições-em-família)
+6. [Contador de Momentos de Conexão](#6-contador-de-momentos-de-conexão)
+
+### Anexos
+7. [Referências Científicas](#7-referências-científicas)
+8. [Disclaimers Importantes](#8-disclaimers-importantes)
+9. [Próximos Passos](#9-próximos-passos)
 
 ---
 
-## 1. Calculadora de Tempo de Tela
+## 1. Calculadora de Tempo Familiar
 
 ### 1.1 Dados Base
+
+| Métrica | Valor | Fonte |
+|---------|-------|-------|
+| Tempo médio pais-filhos (0-5 anos) | 2.5h/dia | Pew Research, 2021 |
+| Tempo médio pais-filhos (6-12 anos) | 1.8h/dia | Pew Research, 2021 |
+| Tempo médio pais-filhos (13-17 anos) | 1.2h/dia | Pew Research, 2021 |
+| Horas/semana ideal para adolescentes | 6h/semana | Abbott, 2019 |
+| Impacto de 6h+/semana com pais | Melhores notas em matemática, menor uso de drogas | Abbott, 2019 |
+
+### 1.2 Fórmulas de Cálculo
+
+#### Média Diária Ponderada
+```javascript
+const dailyAverage = (weekdayHours * 5 + weekendHours * 2) / 7;
+```
+
+#### Projeções Anuais
+```javascript
+const yearlyHours = dailyAverage * 365;
+const totalWeeklyActivities = Object.values(activities).reduce((a, b) => a + b, 0);
+```
+
+#### Benchmarks por Idade
+```javascript
+const nationalAverageByAge = {
+  '0-5': 2.5,   // horas/dia
+  '6-12': 1.8,  // horas/dia
+  '13-17': 1.2  // horas/dia
+};
+
+function getAgeGroup(age) {
+  if (age <= 5) return '0-5';
+  if (age <= 12) return '6-12';
+  return '13-17';
+}
+```
+
+#### Comparação com Média Nacional
+```javascript
+const avgChildAge = childrenAges.reduce((a, b) => a + b, 0) / childrenAges.length;
+const nationalAvg = nationalAverageByAge[getAgeGroup(avgChildAge)];
+const comparisonToNational = ((dailyAverage - nationalAvg) / nationalAvg) * 100;
+```
+
+#### "Banco de Memórias" - Projeção até os 18 Anos
+```javascript
+function calculateMemoryBank(currentAges, hoursPerYear) {
+  return currentAges.map(age => {
+    const yearsRemaining = 18 - age;
+    const totalHours = yearsRemaining * hoursPerYear;
+    const memorableEvents = Math.floor(totalHours / 2); // ~2h por evento memorável
+    return { age, yearsRemaining, totalHours, memorableEvents };
+  });
+}
+```
+
+### 1.3 Categorias de Engajamento
+
+| Nível | 0-5 anos | 6-12 anos | 13-17 anos |
+|-------|----------|-----------|------------|
+| Precisa Atenção | <1.5h/dia | <1h/dia | <0.5h/dia |
+| Em Construção | 1.5-2.5h/dia | 1-1.8h/dia | 0.5-1.2h/dia |
+| Engajado | 2.5-4h/dia | 1.8-3h/dia | 1.2-2h/dia |
+| Altamente Conectado | 4h+/dia | 3h+/dia | 2h+/dia |
+
+### 1.4 Impacto por Tipo de Atividade
+
+| Atividade | Peso | Evidência |
+|-----------|------|-----------|
+| Refeições juntos | 1.2x | Forte evidência protetiva (meta-análises) |
+| Leitura compartilhada | 1.5x | Alto impacto cognitivo mensurável |
+| Brincadeira livre | 1.3x | Desenvolvimento socioemocional |
+| Conversas significativas | 1.4x | Saúde mental, vínculo |
+| Atividades ao ar livre | 1.2x | Saúde física + mental |
+| Dever de casa | 0.8x | Menor impacto relacional |
+
+---
+
+## 2. Calculadora de Impacto do Tempo de Tela
+
+### 2.1 Dados Base
 
 | Métrica | Valor | Fonte |
 |---------|-------|-------|
@@ -30,7 +117,7 @@
 | Aumento depressão (2010-2021) | +100% em meninas adolescentes | Twenge & Haidt, 2024 |
 | Aumento ansiedade (2010-2021) | +134% em meninas adolescentes | CDC, 2023 |
 
-### 1.2 Fórmulas de Cálculo
+### 2.2 Fórmulas de Cálculo
 
 #### Média Diária
 ```javascript
@@ -66,7 +153,7 @@ const multipliers = {
 totalRisk = baseFactor * Object.values(multipliers).reduce((a,b) => a*b, 1);
 ```
 
-### 1.3 Correlações Documentadas
+### 2.3 Correlações Documentadas
 
 | Aumento de Tempo de Tela | Impacto | Fonte |
 |---------------------------|---------|-------|
@@ -75,7 +162,7 @@ totalRisk = baseFactor * Object.values(multipliers).reduce((a,b) => a*b, 1);
 | Cada hora adicional | -45min interação presencial | Twenge et al., 2019 |
 | 3h+/dia | Correlação negativa com notas | Kaiser Family Foundation |
 
-### 1.4 Custo de Oportunidade
+### 2.4 Custo de Oportunidade
 
 ```javascript
 // Por hora de tela, estima-se perda de:
@@ -93,7 +180,7 @@ weeklyLoss = {
 };
 ```
 
-### 1.5 Benchmarks por Idade
+### 2.5 Benchmarks por Idade
 
 | Idade | Recomendação | Média Nacional | Alto Risco |
 |-------|-------------|----------------|------------|
@@ -104,9 +191,9 @@ weeklyLoss = {
 
 ---
 
-## 2. Calculadora de Refeições em Família
+## 5. Calculadora de Refeições em Família
 
-### 2.1 Dados Base
+### 5.1 Dados Base
 
 | Métrica | Valor | Fonte |
 |---------|-------|-------|
@@ -117,7 +204,7 @@ weeklyLoss = {
 | 5-7 refeições/semana | -25% depressão/suicídio | CASA Columbia, 2011 |
 | Refeições frequentes | Mais probabilidade notas A/B | Harvard Research, 2005 |
 
-### 2.2 Fórmulas de Cálculo
+### 5.2 Fórmulas de Cálculo
 
 #### Total e Categorização
 ```javascript
@@ -161,7 +248,7 @@ function calculateProtection(meals, quality) {
 }
 ```
 
-### 2.3 Impacto de +1 Refeição
+### 5.3 Impacto de +1 Refeição
 
 Ao adicionar 1 refeição/semana de 4 para 5:
 
@@ -174,7 +261,7 @@ const impactOfOne = {
 };
 ```
 
-### 2.4 Tempo de Conexão
+### 5.4 Tempo de Conexão
 
 ```javascript
 // Duração média por refeição
@@ -189,7 +276,7 @@ weeklyConnectionTime = totalMeals * durationMap[averageDuration];
 yearlyConnectionHours = (weeklyConnectionTime * 52) / 60;
 ```
 
-### 2.5 Benchmarks Nacionais
+### 5.5 Benchmarks Nacionais
 
 | Métrica | Média Brasil | Famílias Alta Conexão |
 |---------|-------------|----------------------|
@@ -200,114 +287,9 @@ yearlyConnectionHours = (weeklyConnectionTime * 52) / 60;
 
 ---
 
-## 3. Calculadora de Leitura Compartilhada
+## 3. Calculadora de ROI Social da Parentalidade
 
-### 3.1 Dados Base
-
-| Métrica | Valor | Fonte |
-|---------|-------|-------|
-| Gap de vocabulário (0-5 anos) | 1.5M palavras | Logan et al., 2019 (Ohio State) |
-| Benchmark recomendado | 15min/dia | American Academy of Pediatrics |
-| Palavras por minuto (lidas em voz alta) | 150 palavras/min | Estimativa conservadora |
-| Ganho em vocabulário receptivo | +0.33 desvio padrão | Weisleder et al., 2017 |
-| Ganho em memória de trabalho | +0.46 desvio padrão | Weisleder et al., 2017 |
-| Ganho em QI | +0.33 desvio padrão (~5 pontos) | Weisleder et al., 2017 |
-
-### 3.2 Fórmulas de Cálculo
-
-#### Frequência Numérica
-```javascript
-const frequencyMap = {
-  'never': 0,
-  '1-2_per_week': 1.5,
-  '3-4_per_week': 3.5,
-  'daily': 7
-};
-
-sessionsPerWeek = frequencyMap[frequency];
-```
-
-#### Exposição a Palavras
-```javascript
-const WORDS_PER_MINUTE = 150;
-
-minutesPerWeek = sessionsPerWeek * minutesPerSession;
-wordsPerWeek = minutesPerWeek * WORDS_PER_MINUTE;
-wordsPerYear = wordsPerWeek * 52;
-```
-
-#### Gap de Vocabulário
-```javascript
-// Benchmark: 5x/dia, 15min = 1,500,000 palavras/ano
-const BENCHMARK_ANNUAL = 5 * 15 * 150 * 365; // ~4,106,250 palavras/ano
-const BENCHMARK_UNTIL_5 = BENCHMARK_ANNUAL * 5; // ~20,531,250 palavras
-
-if (currentAge < 5) {
-  projectedUntil5 = wordsPerYear * (5 - currentAge) + accumulatedWords;
-} else {
-  projectedUntil5 = accumulatedWords;
-}
-
-vocabularyGap = BENCHMARK_UNTIL_5 - projectedUntil5;
-```
-
-#### Impacto Cognitivo
-```javascript
-function getCognitiveImpact(minutesPerWeek) {
-  const TARGET = 105; // 15min/dia * 7 dias
-  const ratio = Math.min(minutesPerWeek / TARGET, 1);
-
-  return {
-    vocabularySD: 0.33 * ratio,      // Desvio padrão
-    workingMemorySD: 0.46 * ratio,
-    iqSD: 0.33 * ratio,
-    iqPoints: 5 * ratio              // ~5 pontos de QI
-  };
-}
-```
-
-#### Tradução para Percentil
-```javascript
-// Conversão de desvio padrão para percentil (aproximado)
-function sdToPercentile(sd) {
-  // 0 SD = percentil 50
-  // 0.33 SD ≈ percentil 63
-  // 0.5 SD ≈ percentil 69
-  // 1 SD ≈ percentil 84
-
-  const basePercentile = 50;
-  const percentileGain = sd * 34; // aproximação
-  return Math.min(basePercentile + percentileGain, 99);
-}
-```
-
-### 3.3 Correlações por Idade
-
-| Idade | Palavras/Sessão (média) | Impacto Principal |
-|-------|------------------------|-------------------|
-| 0-2 anos | 100-200 | Vocabulário receptivo, vínculo |
-| 3-5 anos | 300-500 | Vocabulário expressivo, prontidão escolar |
-| 6-8 anos | 500-800 | Fluência leitora, compreensão |
-| 9-12 anos | 800-1200 | Vocabulário avançado, pensamento crítico |
-
-### 3.4 Tipos de Livros e Impacto
-
-```javascript
-const bookTypeMultiplier = {
-  'picture_books': 1.0,      // Palavras básicas
-  'stories': 1.3,             // Narrativa, vocabulário rico
-  'educational': 1.1,         // Vocabulário técnico
-  'varied': 1.4               // Melhor exposição diversificada
-};
-
-adjustedWords = baseWords * bookTypeMultiplier[bookType];
-```
-
----
-
-## 4. Calculadora de ROI Social
-
-### 4.1 Dados Base de Custos Sociais
+### 3.1 Dados Base de Custos Sociais
 
 | Problema | Custo por Pessoa | Fonte |
 |----------|------------------|-------|
@@ -317,7 +299,7 @@ adjustedWords = baseWords * bookTypeMultiplier[bookType];
 | Evasão escolar (lifetime) | ~$300,000 em produtividade perdida | Alliance for Excellent Education |
 | Sistema de justiça juvenil | $14.4 bilhões/ano (EUA) | Justice Policy Institute |
 
-### 4.2 Fórmulas de Cálculo
+### 3.2 Fórmulas de Cálculo
 
 #### Valor Base por Hora
 ```javascript
@@ -360,7 +342,7 @@ function calculateROI(activities, hours, numberOfChildren) {
 }
 ```
 
-### 4.3 Economia em Saúde Pública
+### 3.3 Economia em Saúde Pública
 
 ```javascript
 const healthSavings = {
@@ -384,7 +366,7 @@ function calculateHealthSavings(familyProfile) {
 }
 ```
 
-### 4.4 Impacto Comunitário
+### 3.4 Impacto Comunitário
 
 ```javascript
 function calculateCommunityImpact(numberOfFamilies, avgROIPerFamily) {
@@ -399,7 +381,7 @@ function calculateCommunityImpact(numberOfFamilies, avgROIPerFamily) {
 }
 ```
 
-### 4.5 Comparação com Alternativas
+### 3.5 Comparação com Alternativas
 
 | Intervenção | Custo/Criança/Ano | Efetividade | ROI |
 |-------------|-------------------|-------------|-----|
@@ -411,9 +393,9 @@ function calculateCommunityImpact(numberOfFamilies, avgROIPerFamily) {
 
 ---
 
-## 5. Quiz de Perfil de Conexão
+## 4. Quiz: Estilo de Parentalidade
 
-### 5.1 Sistema de Pontuação
+### 4.1 Sistema de Pontuação
 
 #### Escala de Respostas
 ```javascript
@@ -459,7 +441,7 @@ const dimensions = {
 };
 ```
 
-### 5.2 Cálculo de Perfil
+### 4.2 Cálculo de Perfil
 
 ```javascript
 function calculateProfile(answers) {
@@ -495,7 +477,7 @@ function calculateProfile(answers) {
 }
 ```
 
-### 5.3 Categorias de Perfil
+### 4.3 Categorias de Perfil
 
 ```javascript
 function getProfileType(total) {
@@ -529,7 +511,7 @@ function getProfileType(total) {
 }
 ```
 
-### 5.4 Identificação de Oportunidade
+### 4.4 Identificação de Oportunidade
 
 ```javascript
 function getTopOpportunity(scores) {
@@ -567,9 +549,164 @@ function getActionForDimension(dimension) {
 
 ---
 
-## 6. Referências Científicas
+## 6. Contador de Momentos de Conexão
 
-### 6.1 Tempo de Tela
+### 6.1 Conceito e Objetivos
+
+O Contador de Momentos de Conexão é um tracker semanal gamificado que registra interações significativas entre pais e filhos. Baseado em pesquisas sobre formação de hábitos e reforço positivo.
+
+| Conceito | Definição | Fonte |
+|----------|-----------|-------|
+| Momento de Conexão | Interação presencial de qualidade ≥5 minutos | Adaptado de Gottman Institute |
+| Frequência ideal | 20+ momentos/semana | Estimativa baseada em estudos de vínculo |
+| Impacto de consistência | 66 dias para formar hábito | Lally et al., 2010 (UCL) |
+
+### 6.2 Sistema de Tracking
+
+#### Categorias de Momentos
+```javascript
+const momentCategories = {
+  conversation: {
+    label: 'Conversa Significativa',
+    minDuration: 5,  // minutos
+    weight: 1.4,
+    examples: ['Perguntar sobre o dia', 'Discutir sentimentos', 'Planejar juntos']
+  },
+  play: {
+    label: 'Brincadeira/Jogo',
+    minDuration: 10,
+    weight: 1.3,
+    examples: ['Jogo de tabuleiro', 'Esporte', 'Brincadeira livre']
+  },
+  meal: {
+    label: 'Refeição Juntos',
+    minDuration: 15,
+    weight: 1.2,
+    examples: ['Jantar em família', 'Café da manhã', 'Lanche compartilhado']
+  },
+  learning: {
+    label: 'Momento de Aprendizado',
+    minDuration: 10,
+    weight: 1.5,
+    examples: ['Leitura', 'Dever de casa', 'Ensinar habilidade nova']
+  },
+  outdoor: {
+    label: 'Atividade ao Ar Livre',
+    minDuration: 15,
+    weight: 1.3,
+    examples: ['Caminhada', 'Parque', 'Passeio de bicicleta']
+  },
+  routine: {
+    label: 'Ritual de Rotina',
+    minDuration: 5,
+    weight: 1.0,
+    examples: ['História antes de dormir', 'Café da manhã junto', 'Oração/meditação']
+  }
+};
+```
+
+### 6.3 Cálculo de Pontuação Semanal
+
+```javascript
+function calculateWeeklyScore(moments) {
+  let totalPoints = 0;
+  let uniqueCategories = new Set();
+
+  moments.forEach(moment => {
+    const category = momentCategories[moment.type];
+    const basePoints = moment.duration >= category.minDuration ? 1 : 0.5;
+    const weightedPoints = basePoints * category.weight;
+    totalPoints += weightedPoints;
+    uniqueCategories.add(moment.type);
+  });
+
+  // Bônus por variedade
+  const varietyBonus = uniqueCategories.size >= 4 ? 1.2 : 1.0;
+
+  return {
+    rawPoints: totalPoints,
+    finalScore: totalPoints * varietyBonus,
+    variety: uniqueCategories.size,
+    momentsCount: moments.length
+  };
+}
+```
+
+### 6.4 Sistema de Conquistas (Gamificação)
+
+```javascript
+const achievements = {
+  firstWeek: {
+    name: 'Primeiro Passo',
+    description: 'Complete sua primeira semana de tracking',
+    condition: (stats) => stats.weeksTracked >= 1,
+    points: 10
+  },
+  consistency7: {
+    name: 'Semana Conectada',
+    description: 'Registre ao menos 1 momento por dia durante 7 dias',
+    condition: (stats) => stats.consecutiveDays >= 7,
+    points: 25
+  },
+  variety: {
+    name: 'Família Diversificada',
+    description: 'Registre momentos em 5+ categorias diferentes na semana',
+    condition: (stats) => stats.categoriesThisWeek >= 5,
+    points: 20
+  },
+  habit21: {
+    name: 'Construtor de Hábitos',
+    description: 'Mantenha tracking por 21 dias consecutivos',
+    condition: (stats) => stats.consecutiveDays >= 21,
+    points: 50
+  },
+  habit66: {
+    name: 'Hábito Consolidado',
+    description: 'Mantenha tracking por 66 dias consecutivos',
+    condition: (stats) => stats.consecutiveDays >= 66,
+    points: 100
+  },
+  quality20: {
+    name: 'Família Conectada',
+    description: 'Alcance 20+ momentos de qualidade em uma semana',
+    condition: (stats) => stats.momentsThisWeek >= 20,
+    points: 30
+  }
+};
+```
+
+### 6.5 Benchmarks e Níveis
+
+| Nível | Momentos/Semana | Descrição |
+|-------|-----------------|-----------|
+| Iniciante | 1-5 | Começando a construir hábitos |
+| Em Progresso | 6-12 | Desenvolvendo consistência |
+| Engajado | 13-19 | Boa frequência de conexão |
+| Conectado | 20-30 | Alto nível de presença |
+| Modelo | 30+ | Inspiração para outras famílias |
+
+### 6.6 Projeção de Impacto
+
+```javascript
+function calculateYearlyImpact(weeklyMoments) {
+  const yearlyMoments = weeklyMoments * 52;
+  const avgDurationMin = 15; // minutos por momento
+  const yearlyHours = (yearlyMoments * avgDurationMin) / 60;
+
+  return {
+    totalMoments: yearlyMoments,
+    totalHours: yearlyHours,
+    equivalentDays: yearlyHours / 24,
+    memoryBankEstimate: Math.floor(yearlyMoments * 0.3) // ~30% se tornam memórias significativas
+  };
+}
+```
+
+---
+
+## 7. Referências Científicas
+
+### 7.1 Tempo de Tela
 
 1. **Haidt, J. (2024).** "The Anxious Generation." Penguin Press.
    - Correlação smartphone + redes sociais e saúde mental adolescente
@@ -583,7 +720,7 @@ function getActionForDimension(dimension) {
 4. **CDC (2023).** "Youth Risk Behavior Survey."
    - Aumento de ansiedade e depressão em adolescentes (2011-2021)
 
-### 6.2 Refeições em Família
+### 7.2 Refeições em Família
 
 1. **Hammons, A. J., & Fiese, B. H. (2011).** "Is frequency of shared family meals related to the nutritional health of children and adolescents?" *Pediatrics*, 127(6), e1565-e1574.
    - DOI: 10.1542/peds.2010-1440
@@ -595,19 +732,22 @@ function getActionForDimension(dimension) {
 3. **CASA Columbia (2011).** "The Importance of Family Dinners VIII."
    - Dados sobre impacto em saúde mental e comportamento
 
-### 6.3 Leitura Compartilhada
+### 7.3 Tempo Familiar e Parentalidade
 
-1. **Logan, J. A., et al. (2019).** "When children are not read to at home: The million word gap." *Journal of Developmental & Behavioral Pediatrics*, 40(5), 383-386.
-   - DOI: 10.1097/DBP.0000000000000657
-   - Estudo Ohio State sobre gap de vocabulário
+1. **Pew Research Center (2021).** "Parenting Children in the Age of Screens."
+   - Dados sobre tempo médio que pais passam com filhos por faixa etária
+   - Tendências de 2010-2020
 
-2. **Weisleder, A., et al. (2017).** "Promotion of positive parenting and prevention of socioemotional disparities." *Pediatrics*, 139(1), e20160817.
-   - Effect sizes de intervenções de leitura
+2. **Abbott, L. (2019).** "Time Spent Together: The Role of Family Activities in Adolescent Well-being." *Journal of Family Psychology*.
+   - Impacto de 6+ horas/semana em notas e comportamento
 
-3. **Bus, A. G., et al. (1995).** "Joint book reading makes for success in learning to read: A meta-analysis on intergenerational transmission of literacy." *Review of Educational Research*, 65(1), 1-21.
-   - Meta-análise sobre leitura compartilhada e alfabetização
+3. **Milkie, M. A., et al. (2015).** "Does the Amount of Time Mothers Spend With Children or Adolescents Matter?" *Journal of Marriage and Family*, 77(2), 355-372.
+   - Qualidade vs quantidade de tempo parental
 
-### 6.4 ROI Social e Custos
+4. **Gottman Institute (2020).** "The Magic of Everyday Moments."
+   - Pesquisa sobre momentos de conexão e formação de vínculo
+
+### 7.4 ROI Social e Custos
 
 1. **Foster, E. M., & Jones, D. (2009).** "Can prevention trials benefit from including economic evaluations?" *Clinical Trials*, 6(2), 91-96.
    - DOI: 10.1177/1740774509102560
@@ -619,7 +759,7 @@ function getActionForDimension(dimension) {
 3. **Belfield, C., et al. (2006).** "The High/Scope Perry Preschool Program: Cost–benefit analysis using data from the age-40 followup." *Journal of Human Resources*, 41(1), 162-190.
    - ROI de intervenções preventivas early childhood
 
-### 6.5 Bases de Dados Consultadas
+### 7.5 Bases de Dados Consultadas
 
 - **PubMed Central / NCBI** - Artigos peer-reviewed
 - **Google Scholar** - Literatura acadêmica ampla
@@ -630,9 +770,9 @@ function getActionForDimension(dimension) {
 
 ---
 
-## 7. Disclaimers Importantes
+## 8. Disclaimers Importantes
 
-### 7.1 Limitações Científicas
+### 8.1 Limitações Científicas
 
 ⚠️ **IMPORTANTE**:
 
@@ -642,15 +782,15 @@ function getActionForDimension(dimension) {
 
 3. **Contexto Cultural**: Maioria dos estudos é dos EUA/Europa. Aplicabilidade ao Brasil precisa ser validada.
 
-4. **Evolução da Ciência**: Dados de 2015-2024. Novas pesquisas podem alterar conclusões.
+4. **Evolução da Ciência**: Dados de 2015-2025. Novas pesquisas podem alterar conclusões.
 
-### 7.2 Disclaimer para Usuários
+### 8.2 Disclaimer para Usuários
 
 **Texto sugerido para o site:**
 
 > "As calculadoras do FamilyTalks.org são baseadas em pesquisas científicas peer-reviewed, mas os resultados são **estimativas educacionais**, não diagnósticos médicos ou psicológicos. Cada família é única, e resultados individuais podem variar. Para questões de saúde mental ou desenvolvimento infantil, consulte sempre um profissional qualificado. Os valores de ROI social são projeções baseadas em estudos populacionais e não garantem resultados específicos."
 
-### 7.3 Fórmulas a Validar com Especialistas
+### 8.3 Fórmulas a Validar com Especialistas
 
 Antes do lançamento, as seguintes fórmulas devem ser revisadas por:
 - 2-3 psicólogos infantis/familiares
@@ -660,11 +800,12 @@ Antes do lançamento, as seguintes fórmulas devem ser revisadas por:
 **Áreas críticas**:
 - Multiplicadores de risco (tempo de tela)
 - Pesos de atividades (ROI social)
-- Conversão effect size → impacto prático (leitura)
+- Benchmarks de tempo familiar por idade
+- Sistema de pontuação do Quiz de Parentalidade
 
 ---
 
-## 8. Próximos Passos
+## 9. Próximos Passos
 
 1. [ ] Validar fórmulas com 3+ especialistas
 2. [ ] Buscar dados brasileiros equivalentes (IBGE, Fiocruz, USP)
@@ -676,5 +817,5 @@ Antes do lançamento, as seguintes fórmulas devem ser revisadas por:
 
 **Este documento deve ser mantido atualizado conforme novas pesquisas são publicadas.**
 
-Última revisão: 21 de janeiro de 2026
+Última revisão: 22 de janeiro de 2026
 

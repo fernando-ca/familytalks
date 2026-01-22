@@ -22,35 +22,43 @@ Gerar impacto familiar positivo através de:
 
 ## Calculadoras Planejadas
 
-### 1. Calculadora de Tempo de Tela
+### 1. Calculadora de Tempo Familiar
+Mensura o tempo de qualidade dedicado aos filhos e compara com médias nacionais.
+
+**Input**: horas/dia com filhos, idade das crianças
+**Output**: comparação com média nacional, projeção de horas/ano, "banco de memórias" acumulado
+**Valor**: Conscientização sobre tempo investido + motivação para priorizar família
+
+### 2. Calculadora de Impacto do Tempo de Tela
 Baseada no livro "Anxious Generation" de Jonathan Haidt, mostra o impacto do uso excessivo de telas na saúde mental de crianças e adolescentes.
 
+**Input**: horas de tela/dia, idade, tipo de uso (redes sociais vs. educativo)
+**Output**: risco relativo de ansiedade/depressão, comparação com recomendações
 **Valor**: Conscientização de riscos + plano de redução personalizado
 
-### 2. Calculadora de Refeições em Família
-Demonstra os fatores de proteção gerados por refeições compartilhadas (redução de riscos de drogas, depressão, transtornos alimentares).
-
-**Valor**: Evidência do poder de pequenas mudanças + desafio 21 dias
-
-### 3. Calculadora de Leitura Compartilhada
-Quantifica o "gap de palavras" e o impacto cognitivo de 15 minutos diários de leitura.
-
-**Valor**: Motivação para leitura diária + tracker de progresso
-
-### 4. Quiz de Perfil de Conexão Familiar
-Diagnóstico não-julgador em 4 dimensões: Presença, Qualidade, Consistência, Desconexão Digital.
-
-**Valor**: Auto-conhecimento + foco em UMA mudança de alto impacto
-
-### 5. Tracker Semanal de Momentos de Conexão
-Ferramenta gamificada para transformar intenções em hábitos consistentes.
-
-**Valor**: Accountability + visualização de progresso + conquistas
-
-### 6. Calculadora de ROI Social
+### 3. Calculadora de ROI Social da Parentalidade
 Traduz investimento de tempo parental em valor econômico e social para advocacy.
 
-**Valor**: Empoderamento para mudança de políticas públicas
+**Input**: tempo investido, atividades (leitura, refeições juntos, etc.)
+**Output**: economia estimada em custos públicos (saúde mental, sistema prisional, evasão escolar)
+**Valor**: Empoderamento para mudança de políticas públicas + evidência do valor da parentalidade
+
+### 4. Quiz: Estilo de Parentalidade
+Diagnóstico não-julgador que identifica padrão atual e sugere ajustes baseados em evidências.
+
+**Valor**: Auto-conhecimento + plano personalizado de desenvolvimento parental
+
+### 5. Calculadora de Refeições em Família
+Demonstra os fatores de proteção gerados por refeições compartilhadas.
+
+**Input**: refeições juntos/semana
+**Output**: impacto em notas escolares, risco de uso de drogas, vocabulário
+**Valor**: Evidência do poder de pequenas mudanças + desafio 21 dias
+
+### 6. Contador de "Momentos de Conexão"
+Tracker semanal gamificado de interações significativas.
+
+**Valor**: Accountability + visualização de progresso + conquistas + transformação de hábitos
 
 ---
 
@@ -94,41 +102,41 @@ familytalks/
 - **Redis** para cache
 
 ### DevOps
-- **Docker** para containerização
+- **Vercel** para deployment (frontend + backend serverless)
 - **GitHub Actions** para CI/CD
-- **Vercel** para frontend (ou Netlify)
-- **Railway/Render** para backend
+- **Vercel Postgres** ou **Supabase** para database
+- **Vercel KV** (Redis) para cache
 
 ---
 
 ## Roadmap
 
 ### Fase 1: MVP (Semanas 1-10) - 2.5 meses
-- [x] Setup do projeto
+- [x] Setup do projeto (Vercel + GitHub)
 - [ ] Autenticação básica
-- [ ] Calculadora de Tempo de Tela
-- [ ] Quiz de Perfil
-- [ ] Tracker Semanal
+- [ ] **Calculadora de Tempo Familiar**
+- [ ] **Calculadora de Impacto do Tempo de Tela**
 - [ ] Landing page
+- [ ] Deploy no Vercel
 - [ ] **Meta**: 50-100 beta testers
 
 ### Fase 2: Expansão (Semanas 11-18) - 2 meses
-- [ ] Calculadora de Refeições
-- [ ] Calculadora de Leitura
+- [ ] **Calculadora de Refeições em Família**
+- [ ] **Quiz: Estilo de Parentalidade**
+- [ ] **Contador de Momentos de Conexão**
 - [ ] Sistema de conquistas
-- [ ] Relatórios mensais automatizados
 - [ ] Dashboard consolidado
 - [ ] **Meta**: 500-1000 usuários ativos
 
 ### Fase 3: Impacto Sistêmico (Semanas 19-30) - 3 meses
-- [ ] Calculadora de ROI Social
+- [ ] **Calculadora de ROI Social da Parentalidade**
 - [ ] API pública para pesquisadores
 - [ ] Kit de parcerias (escolas, ONGs)
-- [ ] App mobile (opcional)
 - [ ] Relatório de impacto
 - [ ] **Meta**: 2000+ usuários, 5+ parcerias
 
 **Timeline Total**: 7 meses
+**Deploy**: Vercel (frontend + API serverless)
 
 ---
 
@@ -151,34 +159,60 @@ cd calculadoras
 # Instalar dependências
 npm install
 
-# Setup do banco de dados
-docker-compose up -d
-npm run prisma:migrate
+# Setup do banco de dados (Vercel Postgres ou local)
+npm run db:setup
 
-# Iniciar desenvolvimento
+# Iniciar desenvolvimento (Vercel Dev)
+vercel dev
+# ou
 npm run dev
+```
+
+### Deploy no Vercel
+
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Login
+vercel login
+
+# Deploy (staging)
+vercel
+
+# Deploy (production)
+vercel --prod
 ```
 
 ### Estrutura do Projeto (futura)
 
 ```
 familytalks/
-├── frontend/               # React app
-│   ├── src/
-│   │   ├── components/    # Componentes reutilizáveis
-│   │   ├── pages/         # Páginas da aplicação
-│   │   ├── hooks/         # Custom hooks
-│   │   └── services/      # API calls, cálculos
-│   └── package.json
-├── backend/               # Node.js API
-│   ├── src/
-│   │   ├── controllers/   # Request handlers
-│   │   ├── services/      # Business logic
-│   │   ├── models/        # Database models
-│   │   └── utils/         # Helpers, cálculos
-│   └── package.json
-├── docs/                  # Documentação
-└── docker-compose.yml     # Dev environment
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx           # Landing page
+│   │   ├── calculadoras/
+│   │   │   ├── tempo-familiar/
+│   │   │   ├── tempo-tela/
+│   │   │   ├── roi-social/
+│   │   │   ├── refeicoes/
+│   │   │   └── momentos/
+│   │   ├── quiz/
+│   │   └── api/               # API Routes (Vercel Serverless)
+│   ├── components/
+│   │   ├── calculators/       # Componentes das 6 calculadoras
+│   │   ├── shared/            # Componentes reutilizáveis
+│   │   └── layout/
+│   ├── lib/
+│   │   ├── calculations/      # Lógica de cálculo
+│   │   └── db/                # Prisma client
+│   └── types/
+├── prisma/
+│   └── schema.prisma
+├── public/
+├── docs/                      # Documentação
+├── vercel.json               # Configuração Vercel
+└── package.json
 ```
 
 ---

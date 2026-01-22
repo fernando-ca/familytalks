@@ -70,33 +70,33 @@ Fase 3: Impacto          ░░░░░░░░░░░░░░░░░░�
 **Objetivo**: Lançar versão mínima viável com funcionalidades core
 
 **Entregáveis**:
-- [ ] Calculadora de Tempo de Tela
-- [ ] Quiz de Perfil de Conexão
-- [ ] Tracker Semanal básico
-- [ ] Autenticação e perfil de usuário
+- [ ] **Calculadora de Tempo Familiar**
+- [ ] **Calculadora de Impacto do Tempo de Tela**
+- [ ] Autenticação (NextAuth.js)
 - [ ] Landing page
+- [ ] Deploy no Vercel
 - [ ] 50-100 beta testers ativos
 
 ### Fase 2: Expansão (Semanas 11-18)
 **Objetivo**: Adicionar calculadoras complementares e melhorar engajamento
 
 **Entregáveis**:
-- [ ] Calculadora de Refeições em Família
-- [ ] Calculadora de Leitura Compartilhada
+- [ ] **Calculadora de Refeições em Família**
+- [ ] **Quiz: Estilo de Parentalidade**
+- [ ] **Contador de Momentos de Conexão**
 - [ ] Dashboard consolidado
-- [ ] Sistema de conquistas completo
-- [ ] Relatórios mensais automatizados
+- [ ] Sistema de conquistas
 - [ ] 500-1000 usuários ativos
 
 ### Fase 3: Impacto Sistêmico (Semanas 19-30)
 **Objetivo**: Ferramentas de mudança social e escala
 
 **Entregáveis**:
-- [ ] Calculadora de ROI Social
+- [ ] **Calculadora de ROI Social da Parentalidade**
 - [ ] Ferramentas de advocacy (PDFs, templates)
 - [ ] API pública para pesquisadores
 - [ ] Parcerias com escolas/ONGs
-- [ ] App mobile (opcional)
+- [ ] Relatórios mensais por email
 - [ ] 2000+ usuários, impacto mensurável
 
 ---
@@ -110,9 +110,9 @@ Fase 3: Impacto          ░░░░░░░░░░░░░░░░░░�
 **Dia 1-2: Repositório e Ambiente**
 ```bash
 Tasks:
-- [x] Criar repositório GitHub com estrutura monorepo
+- [x] Criar repositório GitHub
 - [ ] Configurar .gitignore, .editorconfig, .prettierrc
-- [ ] Setup Docker Compose para dev (Postgres + Redis)
+- [ ] Instalar Vercel CLI (npm i -g vercel)
 - [ ] Configurar VSCode workspace com extensões recomendadas
 - [ ] Criar documentação de onboarding para devs
 
@@ -120,45 +120,45 @@ Responsável: Tech Lead
 Tempo estimado: 2 dias
 ```
 
-**Dia 3-4: Frontend Base**
+**Dia 3-5: Next.js Full-Stack Setup**
 ```bash
 Tasks:
-- [ ] Criar projeto Vite + React + TypeScript
+- [ ] Criar projeto Next.js 14 + TypeScript (npx create-next-app@latest)
 - [ ] Setup TailwindCSS com design tokens
 - [ ] Configurar ESLint + Prettier
+- [ ] Setup Prisma ORM com Vercel Postgres
+- [ ] Configurar NextAuth.js para autenticação
 - [ ] Implementar componentes base (Button, Input, Card)
-- [ ] Setup Storybook para documentação de componentes
 - [ ] Configurar testes com Vitest
 
-Responsável: Frontend Dev
-Tempo estimado: 2 dias
-```
-
-**Dia 5-7: Backend Base**
-```bash
-Tasks:
-- [ ] Criar projeto Node.js + Express + TypeScript
-- [ ] Setup Prisma ORM e migrations
-- [ ] Configurar autenticação JWT
-- [ ] Implementar middleware (auth, validation, error handling)
-- [ ] Setup testes com Jest + Supertest
-- [ ] Configurar variáveis de ambiente (.env.example)
-
-Responsável: Backend Dev
+Responsável: Full-Stack Dev
 Tempo estimado: 3 dias
 ```
 
-**Dia 8-10: DevOps e CI/CD**
+**Dia 6-7: Vercel Deploy**
 ```bash
 Tasks:
-- [ ] Configurar GitHub Actions para CI
-- [ ] Setup ambientes staging e production
-- [ ] Configurar deploy automático (Vercel + Railway/Render)
-- [ ] Setup Sentry para error tracking
-- [ ] Configurar monitoramento básico
-- [ ] Criar runbooks para deploy e rollback
+- [ ] Conectar repositório GitHub ao Vercel
+- [ ] Configurar Vercel Postgres (database)
+- [ ] Configurar Vercel KV (cache) - opcional
+- [ ] Setup variáveis de ambiente no Vercel
+- [ ] Testar deploy de preview e production
+- [ ] Configurar Vercel Analytics
 
-Responsável: DevOps/Tech Lead
+Responsável: Tech Lead
+Tempo estimado: 2 dias
+```
+
+**Dia 8-10: CI/CD e Qualidade**
+```bash
+Tasks:
+- [ ] Configurar GitHub Actions para CI (lint, test)
+- [ ] Vercel já faz deploy automático (integrado)
+- [ ] Setup Sentry para error tracking
+- [ ] Configurar Vercel Speed Insights
+- [ ] Criar runbook para rollback via Vercel
+
+Responsável: Tech Lead
 Tempo estimado: 3 dias
 ```
 
@@ -264,165 +264,76 @@ Total: ~10 horas
 
 **Entregável**: Usuários podem se cadastrar, fazer login e ver a landing page.
 
-### 4.2 Sprint 2 (Semana 5-6): Calculadora de Tempo de Tela
+### 4.2 Sprint 2 (Semana 5-6): Calculadora de Tempo Familiar
 
-**Objetivo**: Primeira calculadora funcional e com valor real
+**Objetivo**: Primeira calculadora - mensura tempo de qualidade com filhos
 
-#### Backend Tasks
+#### Full-Stack Tasks (Next.js)
 ```typescript
-Sprint 2 - Backend
-├── [6h] Implementar lógica de cálculo (screenTimeCalculations.ts)
+Sprint 2 - Calculadora de Tempo Familiar
+├── [6h] Implementar lógica de cálculo (lib/calculations/tempoFamiliar.ts)
 ├── [3h] Testes unitários das fórmulas (100% coverage)
-├── [4h] Endpoint POST /api/calculators/screen-time
-├── [3h] Salvar resultados no banco (CalculatorResult model)
-├── [3h] Endpoint GET /api/calculators/results/:userId
-├── [2h] Seed de dados de referências científicas
-└── [2h] Documentação de API
-
-Total: ~23 horas
-```
-
-#### Frontend Tasks
-```typescript
-Sprint 2 - Frontend
-├── [8h] Formulário de input (7 campos com validação)
-├── [10h] Painel de resultados (4 cards)
-│   ├── Summary
-│   ├── Risk Analysis (gráfico de risco)
-│   ├── Opportunity Cost
-│   └── Action Plan
-├── [4h] Gráficos com Chart.js (radar chart de risco)
-├── [3h] Animações de transição entre input e resultado
-├── [3h] Botão de "Salvar resultado" e "Refazer cálculo"
+├── [4h] API Route POST /api/calculators/tempo-familiar
+├── [3h] Salvar resultados no banco (Prisma)
+├── [8h] Formulário de input (horas/dia, idades, atividades)
+├── [10h] Painel de resultados
+│   ├── Summary (média diária, comparação nacional)
+│   ├── Memory Bank (projeção até os 18 anos)
+│   ├── Activity Breakdown
+│   └── Suggestions
+├── [4h] Gráficos comparativos (Chart.js)
+├── [3h] Animações de transição
 ├── [2h] Loading states e error handling
 └── [4h] Testes de integração
 
-Total: ~34 horas (2 semanas para 1 dev)
+Total: ~47 horas (2 semanas)
 ```
 
-#### Content Tasks
+**Entregável**: Calculadora de Tempo Familiar completamente funcional.
+
+**Validação**: 10 usuários teste devem conseguir completar o fluxo.
+
+### 4.3 Sprint 3 (Semana 7-8): Calculadora de Impacto do Tempo de Tela
+
+**Objetivo**: Segunda calculadora - baseada no "Anxious Generation"
+
+#### Full-Stack Tasks (Next.js)
 ```typescript
-Sprint 2 - Content
-├── [4h] Escrever textos dos resultados
-├── [3h] Traduzir estudos para insights acionáveis
-├── [2h] Criar FAQ sobre tempo de tela
-└── [1h] Revisar tom e linguagem
+Sprint 3 - Calculadora de Tempo de Tela
+├── [6h] Implementar lógica de cálculo (lib/calculations/tempoTela.ts)
+├── [3h] Testes unitários das fórmulas
+├── [4h] API Route POST /api/calculators/tempo-tela
+├── [8h] Formulário de input (horas, idade, tipo de uso)
+├── [12h] Painel de resultados
+│   ├── Risk Analysis (gráfico de risco)
+│   ├── Comparison to Recommendations
+│   ├── Opportunity Cost
+│   └── Action Plan (redução gradual)
+├── [4h] Gráficos de risco (Chart.js)
+├── [3h] Referências científicas (Haidt)
+└── [4h] Testes
 
-Total: ~10 horas
+Total: ~44 horas (2 semanas)
 ```
 
-**Entregável**: Calculadora de Tempo de Tela completamente funcional.
+**Entregável**: Calculadora de Tempo de Tela funcional.
 
-**Validação**: 10 usuários teste devem conseguir completar o fluxo e entender os resultados.
+### 4.4 Sprint 4 (Semana 9-10): Polish e Beta Testing
 
-### 4.3 Sprint 3 (Semana 7): Quiz de Perfil
-
-**Objetivo**: Ferramenta de diagnóstico e engajamento
-
-#### Backend Tasks
-```typescript
-Sprint 3 - Backend
-├── [4h] Modelo de dados QuizResult
-├── [3h] Lógica de scoring e categorização
-├── [3h] Endpoint POST /api/quiz/submit
-├── [2h] Endpoint GET /api/quiz/results/:userId/latest
-├── [3h] Testes unitários
-└── [2h] Documentação
-
-Total: ~17 horas
-```
-
-#### Frontend Tasks
-```typescript
-Sprint 3 - Frontend
-├── [8h] UI do quiz (15 perguntas, navegação progressiva)
-├── [6h] Painel de resultados com radar chart
-├── [4h] Animações de transição entre perguntas
-├── [3h] Progress bar e indicador visual
-├── [3h] Página de histórico de quiz results
-└── [3h] Testes
-
-Total: ~27 horas
-```
-
-**Entregável**: Quiz completo com resultados personalizados.
-
-### 4.4 Sprint 4 (Semana 8): Tracker Semanal
-
-**Objetivo**: Ferramenta de acompanhamento diário
-
-#### Backend Tasks
-```typescript
-Sprint 4 - Backend
-├── [4h] Modelo TrackerEntry e Achievement
-├── [4h] Endpoint POST /api/tracker/check-in
-├── [3h] Endpoint GET /api/tracker/week/:userId
-├── [4h] Lógica de cálculo de streaks e patterns
-├── [3h] Sistema de conquistas (unlock achievements)
-├── [3h] Testes
-└── [2h] Documentação
-
-Total: ~23 horas
-```
-
-#### Frontend Tasks
-```typescript
-Sprint 4 - Frontend
-├── [6h] Formulário de check-in diário (rápido, < 30s)
-├── [8h] Visualização semanal (calendário com cores)
-├── [6h] Página de achievements com animações
-├── [4h] Análise de padrões (dia mais difícil, etc.)
-└── [3h] Testes
-
-Total: ~27 horas
-```
-
-**Entregável**: Tracker funcional com check-ins diários.
-
-### 4.5 Sprint 5 (Semana 9): Dashboard e Refinamentos
-
-**Objetivo**: Consolidar funcionalidades e preparar para beta
-
-#### Frontend Tasks
-```typescript
-Sprint 5 - Frontend + UX
-├── [8h] Dashboard principal (overview de todas as ferramentas)
-├── [4h] Navegação melhorada (menu, breadcrumbs)
-├── [4h] Perfil de usuário (edição de dados)
-├── [6h] Refinamentos de UX baseados em feedback interno
-├── [4h] Otimizações de performance
-└── [4h] Acessibilidade (keyboard navigation, ARIA labels)
-
-Total: ~30 horas
-```
-
-#### Backend Tasks
-```typescript
-Sprint 5 - Backend
-├── [4h] Endpoint de perfil (GET/PUT /api/profile)
-├── [4h] Otimização de queries (indexes, caching)
-├── [3h] Rate limiting
-├── [2h] Logging estruturado (Winston)
-└── [2h] Monitoring setup (Sentry + PostHog)
-
-Total: ~15 horas
-```
-
-**Entregável**: Dashboard consolidado e aplicação otimizada.
-
-### 4.6 Sprint 6 (Semana 10): Beta Testing e Ajustes
-
-**Objetivo**: Testar com usuários reais e corrigir bugs
+**Objetivo**: Preparar para beta e refinar as duas calculadoras
 
 #### Tasks
 ```typescript
-Sprint 6 - Beta Testing
+Sprint 4 - Polish e Beta Prep
+├── [8h] Dashboard principal (overview das 2 calculadoras)
+├── [4h] Navegação e UX
+├── [4h] Perfil de usuário
+├── [6h] Refinamentos de UX baseados em feedback interno
+├── [4h] Otimizações de performance (Vercel)
+├── [4h] Acessibilidade (keyboard navigation, ARIA)
 ├── [8h] Recrutamento de 50 beta testers
-├── [4h] Criar guia de onboarding para beta testers
 ├── [16h] Correção de bugs identificados
-├── [8h] Refinamentos de UX baseados em feedback
-├── [4h] Otimizações de performance
-├── [4h] Setup de analytics (events tracking)
+├── [4h] Setup de analytics (Vercel Analytics)
 └── [4h] Preparação para soft launch
 
 Total: ~48 horas (distribuído entre o time)
@@ -458,76 +369,75 @@ Total: ~48 horas (distribuído entre o time)
 
 ## 5. Fase 2: Expansão (Semanas 11-18)
 
-### 5.1 Sprint 7 (Semana 11-12): Calculadora de Refeições
+### 5.1 Sprint 5 (Semana 11-12): Calculadora de Refeições em Família
 
-**Objetivo**: Segunda calculadora com foco em vínculo familiar
+**Objetivo**: Terceira calculadora - fatores de proteção das refeições
 
-#### Backend Tasks
+#### Full-Stack Tasks (Next.js)
 ```typescript
-Sprint 7 - Backend
-├── [6h] Implementar lógica de cálculo (mealCalculations.ts)
-├── [3h] Testes unitários (100% coverage)
-├── [4h] Endpoint POST /api/calculators/family-meals
-├── [2h] Seed de conversationStarters
-└── [2h] Documentação
-
-Total: ~17 horas
-```
-
-#### Frontend Tasks
-```typescript
-Sprint 7 - Frontend
-├── [8h] Formulário de input (8 campos)
-├── [12h] Painel de resultados (5 cards)
+Sprint 5 - Calculadora de Refeições em Família
+├── [6h] Implementar lógica de cálculo (lib/calculations/refeicoes.ts)
+├── [3h] Testes unitários
+├── [4h] API Route POST /api/calculators/refeicoes
+├── [8h] Formulário de input (refeições/semana)
+├── [12h] Painel de resultados
 │   ├── Current Status
-│   ├── Protection Factors (gráfico comparativo)
-│   ├── Impact of +1
-│   ├── National Comparison
-│   └── Action Plan (Desafio 21 dias)
-├── [4h] Banco de conversas por idade
+│   ├── Protection Factors (notas, drogas, vocabulário)
+│   ├── Impact of +1 Meal
+│   └── 21-Day Challenge
 ├── [4h] Gráficos comparativos
 └── [3h] Testes
 
-Total: ~31 horas
+Total: ~40 horas (2 semanas)
 ```
 
 **Entregável**: Calculadora de Refeições funcional.
 
-### 5.2 Sprint 8 (Semana 13-14): Calculadora de Leitura
+### 5.2 Sprint 6 (Semana 13-14): Quiz: Estilo de Parentalidade
 
-**Objetivo**: Terceira calculadora com foco em desenvolvimento cognitivo
+**Objetivo**: Diagnóstico de estilo parental com sugestões baseadas em evidências
 
-#### Backend Tasks
+#### Full-Stack Tasks (Next.js)
 ```typescript
-Sprint 8 - Backend
-├── [6h] Implementar lógica de cálculo (readingCalculations.ts)
-├── [3h] Testes unitários
-├── [4h] Endpoint POST /api/calculators/reading
-├── [3h] Sistema de biblioteca virtual (livros lidos)
-└── [2h] Documentação
+Sprint 6 - Quiz: Estilo de Parentalidade
+├── [4h] Modelo de dados QuizResult
+├── [4h] Lógica de scoring e estilos (Baumrind)
+├── [4h] API Route POST /api/quiz/submit
+├── [10h] UI do quiz (20 perguntas, navegação progressiva)
+├── [8h] Painel de resultados
+│   ├── Estilo Identificado (4 estilos)
+│   ├── Dimensões (warmth, structure, autonomy, involvement)
+│   ├── Strengths & Growth Areas
+│   └── Action Plan
+├── [4h] Radar chart das dimensões
+└── [4h] Testes
 
-Total: ~18 horas
+Total: ~42 horas (2 semanas)
 ```
 
-#### Frontend Tasks
-```typescript
-Sprint 8 - Frontend
-├── [8h] Formulário de input (7 campos)
-├── [12h] Painel de resultados (4 cards)
-│   ├── Current Profile (contador de palavras)
-│   ├── Vocabulary Gap (comparação visual)
-│   ├── Cognitive Impact
-│   └── 15-Minute Plan
-├── [6h] Progress Tracker (certificados, milestones)
-├── [4h] Lista de livros recomendados por idade
-└── [3h] Testes
+**Entregável**: Quiz de Parentalidade funcional.
 
-Total: ~33 horas
+### 5.3 Sprint 7 (Semana 15-16): Contador de Momentos de Conexão
+
+**Objetivo**: Tracker semanal gamificado para criar hábitos
+
+#### Full-Stack Tasks (Next.js)
+```typescript
+Sprint 7 - Contador de Momentos de Conexão
+├── [4h] Modelo TrackerEntry e Achievement
+├── [4h] API Routes (check-in, week, achievements)
+├── [6h] Formulário de check-in diário (< 30s)
+├── [10h] Visualização semanal/mensal (calendário gamificado)
+├── [6h] Sistema de conquistas com animações
+├── [4h] Análise de padrões
+└── [4h] Testes
+
+Total: ~38 horas (2 semanas)
 ```
 
-**Entregável**: Calculadora de Leitura funcional.
+**Entregável**: Contador de Momentos funcional e gamificado.
 
-### 5.3 Sprint 9 (Semana 15): Sistema de Conquistas
+### 5.4 Sprint 8 (Semana 17): Dashboard e Conquistas
 
 **Objetivo**: Gamificação para aumentar engajamento
 
@@ -628,11 +538,14 @@ Total: ~44 horas (distribuído entre o time)
 
 ### 5.7 Checklist de Conclusão da Fase 2
 
-**Funcionalidades**:
-- [ ] 5 ferramentas completas (3 calculadoras + quiz + tracker)
+**Funcionalidades (5 das 6 calculadoras)**:
+- [ ] Calculadora de Tempo Familiar
+- [ ] Calculadora de Impacto do Tempo de Tela
+- [ ] Calculadora de Refeições em Família
+- [ ] Quiz: Estilo de Parentalidade
+- [ ] Contador de Momentos de Conexão
 - [ ] Sistema de conquistas funcionando
-- [ ] Relatórios mensais automatizados
-- [ ] Dashboard avançado com insights
+- [ ] Dashboard consolidado
 
 **Qualidade**:
 - [ ] Cobertura de testes > 75%
@@ -816,16 +729,22 @@ Total: ~44 horas
   - Opção realista: Mix de níveis
   - Opção premium: Desenvolvedores sênior
 
-#### Infraestrutura
+#### Infraestrutura (Vercel)
 | Item | Custo Mensal | Custo 7 Meses |
 |------|-------------|---------------|
-| Hosting (Vercel + Railway) | R$ 100 | R$ 700 |
-| Database (PostgreSQL) | R$ 50 | R$ 350 |
-| Email service (SendGrid) | R$ 30 | R$ 210 |
-| Analytics (PostHog) | R$ 0 (free tier) | R$ 0 |
+| Vercel Pro | R$ 100 ($20) | R$ 700 |
+| Vercel Postgres | R$ 25 (~$5) | R$ 175 |
+| Vercel KV (Redis) | R$ 0 (free tier) | R$ 0 |
+| Vercel Analytics | R$ 0 (incluso Pro) | R$ 0 |
+| Email service (Resend) | R$ 0 (free tier) | R$ 0 |
 | Error tracking (Sentry) | R$ 0 (free tier) | R$ 0 |
-| Domain + SSL | R$ 20 | R$ 140 |
-| **Total Infraestrutura** | **R$ 200** | **R$ 1.400** |
+| Domain | R$ 80 (anual) | R$ 80 |
+| **Total Infraestrutura** | **~R$ 125** | **~R$ 955** |
+
+**Alternativa Gratuita (MVP inicial)**:
+- Vercel Hobby: R$ 0/mês
+- Supabase Free Tier: R$ 0/mês
+- Total: R$ 0 para testes/desenvolvimento
 
 #### Outros
 - **Design assets** (ilustrações, ícones): R$ 2.000
@@ -1045,15 +964,17 @@ Parcerias (dependem de API para integração)
 1. [ ] Revisar e aprovar este plano com stakeholders
 2. [ ] Confirmar disponibilidade do time
 3. [ ] Criar repositório GitHub
-4. [ ] Iniciar Setup do Projeto (Fase 0, Dia 1)
-5. [ ] Agendar kick-off meeting
+4. [ ] Setup Next.js + Vercel (npx create-next-app@latest)
+5. [ ] Conectar repo ao Vercel para deploy automático
+6. [ ] Agendar kick-off meeting
 
 ### Semana 2
-6. [ ] Completar setup de infraestrutura
-7. [ ] Validar protótipos com 5-10 usuários
-8. [ ] Validar fórmulas com pesquisadores
-9. [ ] Planejar Sprint 1 em detalhes
-10. [ ] Go/No-Go decision para iniciar desenvolvimento
+7. [ ] Configurar Vercel Postgres
+8. [ ] Setup NextAuth.js
+9. [ ] Validar protótipos com 5-10 usuários
+10. [ ] Validar fórmulas com pesquisadores
+11. [ ] Planejar Sprint 1 em detalhes
+12. [ ] Go/No-Go decision para iniciar desenvolvimento
 
 ---
 

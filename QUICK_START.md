@@ -1,7 +1,7 @@
 # Guia de Início Rápido - FamilyTalks.org
 
-**Versão**: 1.0
-**Data**: 21 de janeiro de 2026
+**Versão**: 1.1
+**Data**: 22 de janeiro de 2026
 **Propósito**: Onboarding rápido do time e início do projeto
 
 ---
@@ -31,8 +31,8 @@
    - Parcerias B2B (escolas, empresas)
 
 3. **Priorização de Features**
-   - MVP atual: Screen Time + Quiz + Tracker
-   - Alternativa: Apenas 2 calculadoras + tracker
+   - MVP atual: Tempo Familiar + Tempo de Tela
+   - Alternativa: Apenas 1 calculadora + landing page
 
 4. **Timeline**
    - Agressiva: 5 meses (risco alto)
@@ -52,68 +52,58 @@
 - [ ] Setup branch protection rules (main, develop)
 - [ ] Configurar .gitignore, .editorconfig
 - [ ] Criar estrutura de pastas (ver seção 2.3 das specs)
-- [ ] Setup Docker Compose para dev
-  ```yaml
-  # docker-compose.yml
-  version: '3.8'
-  services:
-    postgres:
-      image: postgres:15
-      environment:
-        POSTGRES_DB: familytalks
-        POSTGRES_USER: dev
-        POSTGRES_PASSWORD: dev
-      ports:
-        - "5432:5432"
-    redis:
-      image: redis:7
-      ports:
-        - "6379:6379"
-  ```
+- [ ] Criar conta Vercel e linkar ao GitHub
+- [ ] Setup Vercel Postgres (database)
+- [ ] Setup Vercel KV (Redis - opcional para MVP)
 
-#### Dia 3-4: Frontend Setup
+#### Dia 3-5: Setup Next.js (Full-Stack)
 
-- [ ] Criar projeto Vite + React + TypeScript
+- [ ] Criar projeto Next.js 14 com App Router
   ```bash
-  npm create vite@latest frontend -- --template react-ts
-  cd frontend
-  npm install
+  npx create-next-app@latest familytalks --typescript --tailwind --eslint --app --src-dir
+  cd familytalks
   ```
 - [ ] Instalar dependências principais
   ```bash
-  npm install react-router-dom react-hook-form zod
-  npm install @tanstack/react-query
-  npm install tailwindcss chart.js framer-motion
-  npm install -D @types/node
+  npm install @prisma/client next-auth zod
+  npm install react-hook-form @tanstack/react-query
+  npm install chart.js react-chartjs-2 framer-motion
+  npm install -D prisma @types/node
   ```
-- [ ] Configurar TailwindCSS
+- [ ] Configurar TailwindCSS (já incluído no create-next-app)
 - [ ] Setup ESLint + Prettier
 - [ ] Criar componentes base (Button, Input, Card)
-- [ ] Setup Storybook (opcional mas recomendado)
 
-#### Dia 5-7: Backend Setup
+#### Dia 6-7: Setup Prisma + API Routes
 
-- [ ] Criar projeto Node.js + Express + TypeScript
-  ```bash
-  mkdir backend && cd backend
-  npm init -y
-  npm install express cors helmet dotenv
-  npm install prisma @prisma/client
-  npm install -D typescript @types/express @types/node tsx
-  npx tsc --init
-  ```
-- [ ] Setup Prisma
+- [ ] Inicializar Prisma
   ```bash
   npx prisma init
   ```
+- [ ] Configurar conexão com Vercel Postgres
+  ```env
+  # .env (local) ou Vercel Environment Variables
+  DATABASE_URL="postgres://..."
+  ```
 - [ ] Criar schema inicial (ver seção 4.1 das specs)
-- [ ] Setup estrutura de pastas
-- [ ] Configurar middleware básico
-- [ ] Setup testes (Jest + Supertest)
+- [ ] Criar API Routes em `src/app/api/`
+- [ ] Setup NextAuth.js para autenticação
+- [ ] Setup testes (Jest + React Testing Library)
 
-#### Dia 8-10: DevOps
+#### Dia 8-10: DevOps (Vercel)
 
-- [ ] Configurar GitHub Actions (.github/workflows/ci.yml)
+- [ ] Conectar repositório ao Vercel
+  ```bash
+  # Instalar Vercel CLI
+  npm i -g vercel
+
+  # Login
+  vercel login
+
+  # Linkar projeto
+  vercel link
+  ```
+- [ ] Configurar GitHub Actions para CI
   ```yaml
   name: CI
   on: [push, pull_request]
@@ -129,28 +119,37 @@
         - run: npm test
         - run: npm run build
   ```
-- [ ] Setup ambientes (staging, production)
-- [ ] Configurar Vercel (frontend)
-- [ ] Configurar Railway/Render (backend)
+- [ ] Setup ambientes no Vercel
+  - Preview: deploy automático em PRs
+  - Production: deploy em merge para main
+- [ ] Configurar variáveis de ambiente no Vercel
+  - DATABASE_URL (Vercel Postgres)
+  - NEXTAUTH_SECRET
+  - NEXTAUTH_URL
 - [ ] Setup Sentry para error tracking
-- [ ] Configurar variáveis de ambiente
+- [ ] Configurar domínio customizado (quando disponível)
 
 ### Decisões Arquiteturais
 
-**A decidir antes de começar**:
+**Decisões já tomadas (Next.js + Vercel)**:
 
-1. **Monorepo ou Multi-repo?**
-   - Recomendação: Monorepo (mais fácil para equipe pequena)
+1. **Arquitetura**: Full-stack Next.js 14 com App Router
+   - Benefício: Frontend e API no mesmo projeto
+   - Benefício: Deploy simplificado no Vercel
 
-2. **REST ou GraphQL?**
-   - Recomendação: REST (mais simples para MVP)
+2. **API**: REST via API Routes do Next.js
+   - Endpoints em `src/app/api/`
+   - Serverless functions automáticas
 
-3. **State Management?**
-   - Recomendação: React Query + Context API (suficiente)
+3. **State Management**
+   - React Query para server state
+   - Context API para auth/theme
 
-4. **Testes E2E?**
-   - MVP: Apenas testes críticos
-   - Fase 2: Playwright completo
+4. **Testes E2E**
+   - MVP: Jest + React Testing Library
+   - Fase 2: Playwright para E2E completo
+
+5. **Database**: Vercel Postgres + Prisma ORM
 
 ---
 
@@ -164,8 +163,8 @@
 # Versões necessárias
 node -v   # v20+
 npm -v    # v10+
-docker -v # v24+
 git -v    # v2.40+
+vercel -v # v33+ (Vercel CLI)
 ```
 
 #### Setup Local (quando código estiver disponível)
@@ -178,24 +177,25 @@ cd calculadoras
 # 2. Instalar dependências
 npm install
 
-# 3. Subir banco de dados
-docker-compose up -d
+# 3. Configurar variáveis de ambiente
+cp .env.example .env.local
+# Editar .env.local com suas credenciais:
+# - DATABASE_URL (Vercel Postgres ou local)
+# - NEXTAUTH_SECRET
+# - NEXTAUTH_URL=http://localhost:3000
 
-# 4. Setup do backend
-cd backend
-cp .env.example .env  # Configurar variáveis
-npx prisma migrate dev
-npx prisma db seed    # Dados iniciais
-npm run dev
+# 4. Setup do banco de dados
+npx prisma generate
+npx prisma db push    # Criar tabelas
+npx prisma db seed    # Dados iniciais (se houver)
 
-# 5. Setup do frontend (outro terminal)
-cd ../frontend
-cp .env.example .env
+# 5. Iniciar servidor de desenvolvimento
 npm run dev
+# ou usando Vercel CLI para simular ambiente de produção
+vercel dev
 
 # 6. Acessar
-# Frontend: http://localhost:5173
-# Backend: http://localhost:3000
+# http://localhost:3000
 ```
 
 ### Padrões de Código
@@ -207,24 +207,26 @@ npm run dev
 <type>(<scope>): <subject>
 
 # Exemplos
-feat(calculator): add screen time calculator
+feat(calculator): add family time calculator
+feat(calculator): add screen time impact calculator
 fix(auth): resolve token refresh issue
 docs(readme): update setup instructions
-test(meals): add unit tests for calculations
-refactor(tracker): simplify streak calculation
+test(meals): add unit tests for meal calculations
+refactor(tracker): simplify connection moments tracking
 ```
 
 **Types**: feat, fix, docs, test, refactor, style, chore
 
 #### Naming Conventions
 
-**Frontend**:
+**Componentes (Next.js)**:
 ```typescript
 // Componentes: PascalCase
+export function FamilyTimeCalculator() {}
 export function ScreenTimeCalculator() {}
 
 // Funções: camelCase
-export function calculateRisk() {}
+export function calculateFamilyTime() {}
 
 // Constantes: UPPER_SNAKE_CASE
 export const MAX_SCREEN_TIME = 12;
@@ -233,29 +235,32 @@ export const MAX_SCREEN_TIME = 12;
 export function useCalculator() {}
 ```
 
-**Backend**:
+**API Routes (Next.js)**:
 ```typescript
-// Arquivos: kebab-case
-// screen-time.service.ts
-// calculator.controller.ts
+// Arquivos: route.ts dentro de pastas nomeadas
+// src/app/api/calculators/family-time/route.ts
+// src/app/api/calculators/screen-time/route.ts
 
-// Classes: PascalCase
-export class CalculatorService {}
+// Handlers: GET, POST, PUT, DELETE
+export async function POST(request: Request) {}
 
-// Funções: camelCase
-export function validateInput() {}
+// Services: kebab-case
+// src/lib/services/family-time.service.ts
+export class FamilyTimeService {}
 ```
 
 #### Estrutura de Arquivos
 
-**Componente React**:
+**Componente React (Next.js App Router)**:
 ```typescript
-// ScreenTimeCalculator.tsx
+// src/app/calculadoras/tempo-familiar/page.tsx
+'use client';
+
 import { useState } from 'react';
 import { useCalculator } from '@/hooks/useCalculator';
-import { Button, Input } from '@/components/shared';
+import { Button, Input } from '@/components/ui';
 
-export function ScreenTimeCalculator() {
+export default function FamilyTimePage() {
   // 1. Hooks
   // 2. State
   // 3. Effects
@@ -264,13 +269,28 @@ export function ScreenTimeCalculator() {
 }
 ```
 
-**Service Backend**:
+**API Route (Next.js)**:
 ```typescript
-// screen-time.service.ts
-export class ScreenTimeService {
-  // 1. Constructor
-  // 2. Public methods
-  // 3. Private helpers
+// src/app/api/calculators/family-time/route.ts
+import { NextResponse } from 'next/server';
+import { FamilyTimeService } from '@/lib/services/family-time.service';
+
+export async function POST(request: Request) {
+  const data = await request.json();
+  const result = FamilyTimeService.calculate(data);
+  return NextResponse.json(result);
+}
+```
+
+**Service**:
+```typescript
+// src/lib/services/family-time.service.ts
+export class FamilyTimeService {
+  static calculate(input: FamilyTimeInput) {
+    // 1. Validate input
+    // 2. Calculate metrics
+    // 3. Return results
+  }
 }
 ```
 
@@ -279,6 +299,8 @@ export class ScreenTimeService {
 1. **Pegar task do GitHub Projects**
 2. **Criar branch**
    ```bash
+   git checkout -b feat/calculator-family-time
+   # ou
    git checkout -b feat/calculator-screen-time
    ```
 3. **Desenvolver com TDD** (quando aplicável)
@@ -295,8 +317,8 @@ export class ScreenTimeService {
    ```
 5. **Push e PR**
    ```bash
-   git push origin feat/calculator-screen-time
-   # Criar PR no GitHub
+   git push origin feat/calculator-family-time
+   # Criar PR no GitHub - Vercel fará deploy de preview automático
    ```
 6. **Code review** (pelo menos 1 aprovação)
 7. **Merge** (squash preferred)
@@ -405,7 +427,29 @@ Para cada calculadora:
 - "Você deveria..."
 - Linguagem técnica sem explicação
 
-### Exemplo de Texto (Screen Time - Resultado)
+### Exemplo de Texto (Tempo Familiar - Resultado)
+
+```markdown
+# Seu Diagnóstico: Família Engajada
+
+## O que isso significa
+
+Com 2.3 horas diárias dedicadas ao seu filho de 8 anos, você está 28% acima
+da média nacional para essa faixa etária (1.8h/dia). Isso é excelente!
+
+Seu "banco de memórias" projetado: até os 18 anos, você terá acumulado
+aproximadamente 8.400 horas de tempo de qualidade juntos.
+
+## Próximos Passos
+
+Você já está no caminho certo! Para potencializar ainda mais:
+
+**Dica 1**: Adicione 1 atividade de leitura conjunta por semana
+**Dica 2**: Proteja o horário do jantar de interrupções digitais
+**Dica 3**: Crie 1 tradição semanal única da família
+```
+
+### Exemplo de Texto (Tempo de Tela - Resultado)
 
 ```markdown
 # Seu Diagnóstico: Tempo de Tela Elevado
@@ -459,25 +503,20 @@ Você consegue! Mais de 2.000 famílias já fizeram essa jornada com sucesso.
 
 ### Tasks do Sprint 1
 
-**Backend** (22h estimadas):
-- [ ] Setup autenticação JWT (5pts)
-- [ ] Endpoint /register (3pts)
-- [ ] Endpoint /login (3pts)
-- [ ] Middleware de auth (2pts)
-- [ ] Testes (5pts)
-
-**Frontend** (28h estimadas):
+**Full-Stack (Next.js)** (30h estimadas):
+- [ ] Setup NextAuth.js com providers (5pts)
+- [ ] API Route /api/auth/* (3pts)
+- [ ] Prisma User model (2pts)
 - [ ] Landing page (8pts)
 - [ ] Página de registro (5pts)
 - [ ] Página de login (5pts)
-- [ ] Protected routes (3pts)
-- [ ] Auth context (3pts)
-- [ ] Testes (3pts)
+- [ ] Middleware de auth (2pts)
+- [ ] Testes (5pts)
 
 **Design** (10h estimadas):
-- [ ] Ilustrações landing (5pts)
-- [ ] Iconografia (3pts)
-- [ ] Animações (2pts)
+- [ ] Design system no Figma (5pts)
+- [ ] Ilustrações landing (3pts)
+- [ ] Iconografia (2pts)
 
 ### Daily Standup (15min, mesmo horário todos os dias)
 
@@ -506,11 +545,14 @@ Cada pessoa responde:
 
 ### Documentação
 
+- [Next.js Docs](https://nextjs.org/docs) - Framework principal
+- [Vercel Docs](https://vercel.com/docs) - Plataforma de deploy
 - [React Docs](https://react.dev/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Prisma Docs](https://www.prisma.io/docs)
 - [TailwindCSS Docs](https://tailwindcss.com/docs)
 - [Chart.js Docs](https://www.chartjs.org/docs/)
+- [NextAuth.js Docs](https://next-auth.js.org/) - Autenticação
 
 ### Ferramentas
 
@@ -536,9 +578,10 @@ Cada pessoa responde:
 - [ ] Fórmulas validadas com especialistas
 
 ### Tech Lead
-- [ ] Repositório criado
-- [ ] CI/CD configurado
-- [ ] Ambientes criados (staging, prod)
+- [ ] Repositório criado e linkado ao Vercel
+- [ ] CI/CD configurado (GitHub Actions + Vercel)
+- [ ] Vercel Postgres configurado
+- [ ] Ambientes Vercel criados (Preview, Production)
 - [ ] Documentação de setup testada
 
 ### Desenvolvedores
