@@ -101,19 +101,56 @@ export interface QuizParentalidadeResult extends CalculatorResult {
   sources: string[]
 }
 
-// Refeições Types
+// Refeicoes Types
+export type MealsCategory = 'disconnected' | 'building' | 'engaged' | 'connected'
+export type ScreensPresence = 'never' | 'sometimes' | 'always'
+export type MealDuration = 'less10' | '10to20' | '20to30' | 'more30'
+
 export interface RefeicoesInput {
-  weeklyMeals: number
-  avgDurationMinutes: number
-  noScreens: boolean
+  breakfastPerWeek: number
+  lunchPerWeek: number
+  dinnerPerWeek: number
+  averageDuration: MealDuration
+  screensPresent: ScreensPresence
+  bothParentsPresent: boolean
   conversationQuality: number
-  allFamilyPresent: number
+}
+
+export interface ProtectionFactor {
+  current: number
+  potential: number
+  label: string
+  description: string
 }
 
 export interface RefeicoesResult extends CalculatorResult {
-  qualityIndex: number
-  frequencyScore: number
-  engagementScore: number
+  currentStatus: {
+    totalMealsPerWeek: number
+    category: MealsCategory
+    categoryLabel: string
+    totalConnectionMinutes: number
+    qualityScore: number
+    qualityMultiplier: number
+  }
+  protectionFactors: {
+    obesity: ProtectionFactor
+    unhealthyEating: ProtectionFactor
+    eatingDisorders: ProtectionFactor
+    substanceUse: ProtectionFactor
+    mentalHealth: ProtectionFactor
+  }
+  impactOfOne: {
+    yearlyHours: number
+    vocabularyExposure: number
+    riskReduction: number
+    description: string
+  }
+  nationalComparison: {
+    yourFamily: number
+    nationalAverage: number
+    highConnectionFamilies: number
+    percentile: number
+  }
 }
 
 // Momentos de Conexão Types
