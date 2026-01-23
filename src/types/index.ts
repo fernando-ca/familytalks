@@ -52,58 +52,211 @@ export interface ROISocialResult extends CalculatorResult {
 }
 
 // Quiz Parentalidade Types
-export type ParentingStyle = 'authoritative' | 'authoritarian' | 'permissive' | 'uninvolved'
+export type QuizProfile = 'alert' | 'building' | 'engaged' | 'connected'
+export type QuizDimension = 'presence' | 'quality' | 'consistency' | 'digital'
 
 export interface QuizAnswer {
   questionId: string
   value: number
 }
 
-export interface QuizResult extends CalculatorResult {
-  primaryStyle: ParentingStyle
-  secondaryStyle: ParentingStyle | null
-  styleScores: Record<ParentingStyle, number>
+export interface QuizDimensionScore {
+  score: number
+  max: number
+  percentage: number
+  label: string
+  description: string
 }
 
-// Refeições Types
+export interface QuizProfileResult {
+  type: QuizProfile
+  label: string
+  color: string
+  bgColor: string
+  message: string
+}
+
+export interface QuizTopOpportunity {
+  dimension: QuizDimension
+  dimensionLabel: string
+  currentPercent: number
+  suggestedAction: string
+  expectedImpact: string
+}
+
+export interface QuizParentalidadeInput {
+  answers: Record<string, number>
+}
+
+export interface QuizParentalidadeResult extends CalculatorResult {
+  profile: QuizProfileResult
+  totalScore: number
+  maxScore: number
+  percentage: number
+  dimensionScores: Record<QuizDimension, QuizDimensionScore>
+  strengths: string[]
+  growthAreas: string[]
+  topOpportunity: QuizTopOpportunity
+  weeklyGoals: string[]
+  sources: string[]
+}
+
+// Refeicoes Types
+export type MealsCategory = 'disconnected' | 'building' | 'engaged' | 'connected'
+export type ScreensPresence = 'never' | 'sometimes' | 'always'
+export type MealDuration = 'less10' | '10to20' | '20to30' | 'more30'
+
 export interface RefeicoesInput {
-  weeklyMeals: number
-  avgDurationMinutes: number
-  noScreens: boolean
+  breakfastPerWeek: number
+  lunchPerWeek: number
+  dinnerPerWeek: number
+  averageDuration: MealDuration
+  screensPresent: ScreensPresence
+  bothParentsPresent: boolean
   conversationQuality: number
-  allFamilyPresent: number
+}
+
+export interface ProtectionFactor {
+  current: number
+  potential: number
+  label: string
+  description: string
 }
 
 export interface RefeicoesResult extends CalculatorResult {
-  qualityIndex: number
-  frequencyScore: number
-  engagementScore: number
+  currentStatus: {
+    totalMealsPerWeek: number
+    category: MealsCategory
+    categoryLabel: string
+    totalConnectionMinutes: number
+    qualityScore: number
+    qualityMultiplier: number
+  }
+  protectionFactors: {
+    obesity: ProtectionFactor
+    unhealthyEating: ProtectionFactor
+    eatingDisorders: ProtectionFactor
+    substanceUse: ProtectionFactor
+    mentalHealth: ProtectionFactor
+  }
+  impactOfOne: {
+    yearlyHours: number
+    vocabularyExposure: number
+    riskReduction: number
+    description: string
+  }
+  nationalComparison: {
+    yourFamily: number
+    nationalAverage: number
+    highConnectionFamilies: number
+    percentile: number
+  }
 }
 
 // Momentos de Conexão Types
-export interface MomentoConexao {
-  id: string
-  type: 'conversation' | 'activity' | 'affection' | 'support' | 'celebration'
-  description: string
-  timestamp: Date
-  participants: string[]
-  durationMinutes: number
-  emotionalIntensity: number
+export type MomentCategory = 'conversation' | 'play' | 'meal' | 'learning' | 'outdoor' | 'routine'
+export type ConnectionLevel = 'iniciante' | 'emProgresso' | 'engajado' | 'conectado' | 'modelo'
+
+export interface MomentInput {
+  type: MomentCategory
+  duration: number
+  date: string
 }
 
-export interface MomentosResult extends CalculatorResult {
-  totalMoments: number
-  streakDays: number
-  badges: Badge[]
-  weeklyTrend: number[]
+export interface MomentosInput {
+  moments: MomentInput[]
+  targetMomentsPerWeek?: number
 }
 
-export interface Badge {
+export interface MomentCategoryInfo {
+  label: string
+  minDuration: number
+  weight: number
+  examples: string[]
+  icon: string
+}
+
+export interface Achievement {
   id: string
   name: string
   description: string
-  icon: string
-  unlockedAt?: Date
+  condition: string
+  points: number
+  unlocked: boolean
+  progress?: number
+  maxProgress?: number
+}
+
+export interface ConnectionLevelInfo {
+  level: ConnectionLevel
+  label: string
+  description: string
+  color: string
+  bgColor: string
+  minMoments: number
+  maxMoments: number
+}
+
+export interface WeeklyScore {
+  rawPoints: number
+  finalScore: number
+  variety: number
+  momentsCount: number
+  varietyBonus: boolean
+}
+
+export interface DayStatus {
+  date: string
+  dayOfWeek: string
+  momentsCount: number
+  totalMinutes: number
+  categories: MomentCategory[]
+  achieved: boolean
+}
+
+export interface WeeklyPattern {
+  mostFrequentCategory: MomentCategory | null
+  leastUsedCategory: MomentCategory | null
+  bestDay: string
+  hardestDay: string
+  averageMomentsPerDay: number
+  averageMinutesPerDay: number
+}
+
+export interface YearlyImpact {
+  totalMoments: number
+  totalHours: number
+  equivalentDays: number
+  memoryBankEstimate: number
+}
+
+export interface MomentosResult extends CalculatorResult {
+  weeklyView: {
+    days: DayStatus[]
+    totalMoments: number
+    totalMinutes: number
+    goalMoments: number
+    goalAchieved: boolean
+    currentStreak: number
+  }
+  weeklyScore: WeeklyScore
+  connectionLevel: ConnectionLevelInfo
+  categoryBreakdown: {
+    category: MomentCategory
+    count: number
+    totalMinutes: number
+    weightedPoints: number
+    percentage: number
+  }[]
+  achievements: {
+    unlocked: Achievement[]
+    inProgress: Achievement[]
+    nextMilestone: Achievement | null
+  }
+  patterns: WeeklyPattern
+  yearlyImpact: YearlyImpact
+  suggestions: string[]
+  sources: string[]
 }
 
 // API Response Types
