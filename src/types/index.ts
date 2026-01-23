@@ -52,17 +52,53 @@ export interface ROISocialResult extends CalculatorResult {
 }
 
 // Quiz Parentalidade Types
-export type ParentingStyle = 'authoritative' | 'authoritarian' | 'permissive' | 'uninvolved'
+export type QuizProfile = 'alert' | 'building' | 'engaged' | 'connected'
+export type QuizDimension = 'presence' | 'quality' | 'consistency' | 'digital'
 
 export interface QuizAnswer {
   questionId: string
   value: number
 }
 
-export interface QuizResult extends CalculatorResult {
-  primaryStyle: ParentingStyle
-  secondaryStyle: ParentingStyle | null
-  styleScores: Record<ParentingStyle, number>
+export interface QuizDimensionScore {
+  score: number
+  max: number
+  percentage: number
+  label: string
+  description: string
+}
+
+export interface QuizProfileResult {
+  type: QuizProfile
+  label: string
+  color: string
+  bgColor: string
+  message: string
+}
+
+export interface QuizTopOpportunity {
+  dimension: QuizDimension
+  dimensionLabel: string
+  currentPercent: number
+  suggestedAction: string
+  expectedImpact: string
+}
+
+export interface QuizParentalidadeInput {
+  answers: Record<string, number>
+}
+
+export interface QuizParentalidadeResult extends CalculatorResult {
+  profile: QuizProfileResult
+  totalScore: number
+  maxScore: number
+  percentage: number
+  dimensionScores: Record<QuizDimension, QuizDimensionScore>
+  strengths: string[]
+  growthAreas: string[]
+  topOpportunity: QuizTopOpportunity
+  weeklyGoals: string[]
+  sources: string[]
 }
 
 // Refeições Types
