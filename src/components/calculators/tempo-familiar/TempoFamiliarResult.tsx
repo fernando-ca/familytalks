@@ -134,7 +134,7 @@ export function TempoFamiliarResult({ result, onRecalculate }: TempoFamiliarResu
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-600">Progresso para "Altamente Conectado"</span>
+                <span className="text-neutral-600">Progresso para &quot;Altamente Conectado&quot;</span>
                 <span className="font-medium text-primary-600">{progress}%</span>
               </div>
               <div className="h-3 bg-neutral-200 rounded-full overflow-hidden">

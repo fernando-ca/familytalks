@@ -208,7 +208,7 @@ export default function TempoFamiliarPage() {
                         Seus resultados aparecerão aqui
                       </h3>
                       <p className="text-neutral-500">
-                        Preencha o formulário ao lado e clique em "Calcular" para ver seus insights personalizados.
+                        Preencha o formulário ao lado e clique em &quot;Calcular&quot; para ver seus insights personalizados.
                       </p>
                     </CardContent>
                   </Card>
