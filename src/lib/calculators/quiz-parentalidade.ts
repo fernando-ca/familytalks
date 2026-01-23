@@ -42,6 +42,7 @@ export interface QuizInput {
 export interface QuizResult {
   profile: QuizProfileResult
   totalScore: number
+  weightedScore: number  // Score ponderado conforme pesos das dimensoes
   maxScore: number
   percentage: number
   dimensionScores: Record<Dimension, DimensionScore>
@@ -593,11 +594,21 @@ export function calculateQuizResult(input: QuizInput): QuizResult {
   // Calculate dimension scores
   const dimensionScores = calculateDimensionScores(answers)
 
-  // Calculate total score (raw, not weighted)
-  let totalScore = 0
+  // Calculate total score (raw, without weights - used for profile thresholds)
+  let rawTotal = 0
   for (const score of Object.values(dimensionScores)) {
-    totalScore += score.score
+    rawTotal += score.score
   }
+
+  // Calculate weighted total (as per SCIENTIFIC_FORMULAS.md)
+  // Weights: presence=1.0, quality=1.2, consistency=1.1, digital=1.3
+  let weightedTotal = 0
+  for (const [dim, score] of Object.entries(dimensionScores) as [Dimension, DimensionScore][]) {
+    weightedTotal += score.score * dimensions[dim].weight
+  }
+
+  // Use raw total for profile categorization (thresholds are based on 0-45 scale)
+  const totalScore = rawTotal
 
   // Get profile
   const profile = getProfileType(totalScore)
@@ -629,6 +640,7 @@ export function calculateQuizResult(input: QuizInput): QuizResult {
   return {
     profile,
     totalScore,
+    weightedScore: Math.round(weightedTotal * 10) / 10,  // Arredonda para 1 casa decimal
     maxScore: 45,
     percentage: Math.round((totalScore / 45) * 100),
     dimensionScores,
